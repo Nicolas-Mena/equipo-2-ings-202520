@@ -224,6 +224,7 @@ Feature: RF-019 - Interfaz sencilla para búsqueda
   Quiero un buscador visible siempre
   Para encontrar rápidamente medicamentos
 
+<<<<<<< HEAD
   Scenario: Buscador rápido
     Given que el usuario ve el campo de búsqueda en la parte superior
     When ingresa texto
@@ -240,3 +241,89 @@ Feature: RF-020 - Soporte básico
     Then el sistema muestra preguntas frecuentes
     And muestra información de contacto para dudas
 ```
+=======
+## RF-020 - Soporte básico
+**Id:** REQ-020    
+**Título:** Ayuda en línea  
+**Descripción:** Tener una sección con instrucciones simples de uso.  
+**Criterios de aceptación:**
+- Página con preguntas frecuentes  
+- Información de contacto para dudas  
+**Prioridad:** BAJA
+
+---
+
+# Requisitos No Funcionales - Sistema de Inventario de Medicamentos EPS MEDICLICK
+
+
+---
+RNF-001 – Disponibilidad del sistema
+
+Id: RNF-001
+Título: Disponibilidad del sistema
+Descripción: El sistema debe estar disponible al menos el 99 % del tiempo durante el horario laboral (7:00 a. m. – 9:00 p. m.), salvo mantenimientos programados.
+Criterios de aceptación:
+
+Monitoreo continuo de disponibilidad.
+
+Registro de tiempos de inactividad.
+
+Notificación previa de mantenimientos.
+Prioridad: ALTA
+---
+RNF-002 – Rendimiento de respuesta
+
+Id: RNF-002
+Título: Tiempo de respuesta
+Descripción: El sistema debe responder a cualquier consulta o acción del usuario en menos de 3 segundos para inventarios de hasta 10.000 registros.
+Criterios de aceptación:
+
+Medición de tiempo de respuesta en pruebas de carga.
+
+Soporte fluido con base de datos de gran tamaño.
+Prioridad: ALTA
+
+---
+
+RNF-003 – Escalabilidad
+
+Id: RNF-003
+Título: Escalabilidad del sistema
+Descripción: La arquitectura debe permitir aumentar la capacidad de almacenamiento y procesamiento sin rediseñar el sistema, soportando el crecimiento de datos y usuarios.
+Criterios de aceptación:
+
+Pruebas con incremento progresivo de datos y usuarios.
+
+Implementación modular que permita ampliaciones.
+Prioridad: MEDIA
+
+---
+
+RNF-004 – Seguridad de datos
+
+Id: RNF-004
+Título: Protección de datos sensibles
+Descripción: Toda la comunicación y almacenamiento de datos sensibles debe estar protegida con cifrado SSL/TLS y contraseñas encriptadas.
+Criterios de aceptación:
+
+Certificado SSL activo.
+
+Contraseñas cifradas con algoritmo seguro.
+
+Pruebas de penetración superadas.
+Prioridad: ALTA
+
+---
+
+RNF-005 – Compatibilidad multiplataforma
+
+Id: RNF-005
+Título: Compatibilidad en navegadores y dispositivos
+Descripción: El sistema debe ser accesible desde los principales navegadores web (Chrome, Firefox, Edge) y dispositivos móviles con pantallas de al menos 5 pulgadas.
+Criterios de aceptación:
+
+Pruebas en navegadores y dispositivos indicados.
+
+Ajuste responsive de interfaz.
+Prioridad: MEDIA
+>>>>>>> 1c8b32c06be3aaa85cdf70d40e49c04bcd70b7e2
