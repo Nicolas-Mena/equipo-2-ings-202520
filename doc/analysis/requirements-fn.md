@@ -1,240 +1,242 @@
-# Requisitos Funcionales - Sistema de Inventario de Medicamentos EPS MEDICLICK
+```gherkin
+@alta
+Feature: RF-001 - Registro de EPS
+  Como EPS
+  Quiero registrarme en el sistema con mis datos básicos
+  Para poder acceder y gestionar medicamentos
 
----
+  Scenario: Registro exitoso de EPS
+    Given que la EPS accede al formulario de registro
+    When completa nombre, NIT, contacto y correo
+    And confirma el envío
+    Then el sistema guarda los datos en la base
+    And muestra mensaje de confirmación
 
-## RF-001 - Registro de EPS en el sistema
-**Id:** REQ-001    
-**Título:** Registro de EPS  
-**Descripción:** Permitir que una EPS se registre en el sistema con datos básicos de identificación y contacto.  
-**Criterios de aceptación:**
-- Formulario con campos básicos (nombre, NIT, contacto, correo)  
-- Botón para confirmar y enviar el registro  
-- Guardado de datos en la base  
-- Mensaje de confirmación de registro  
-**Prioridad:** ALTA  
+@alta
+Feature: RF-002 - Inicio de sesión de EPS
+  Como usuario de una EPS
+  Quiero iniciar sesión con credenciales válidas
+  Para acceder al sistema
 
----
+  Scenario: Inicio de sesión válido
+    Given que el usuario ingresa usuario y contraseña
+    When las credenciales son correctas
+    Then accede al panel principal
 
-## RF-002 - Inicio de sesión de EPS
-**Id:** REQ-002    
-**Título:** Inicio de sesión  
-**Descripción:** Permitir que usuarios de una EPS puedan acceder al sistema con usuario y contraseña.  
-**Criterios de aceptación:**
-- Formulario con usuario y contraseña  
-- Validación de credenciales  
-- Acceso al panel principal si son correctas  
-- Mensaje de error si son incorrectas  
-**Prioridad:** ALTA  
+  Scenario: Inicio de sesión inválido
+    Given que el usuario ingresa usuario y contraseña
+    When las credenciales son incorrectas
+    Then el sistema muestra mensaje de error
 
----
+@alta
+Feature: RF-003 - Registro de medicamentos
+  Como EPS
+  Quiero registrar medicamentos con nombre, cantidad y vencimiento
+  Para mantener actualizado el inventario
 
-## RF-003 - Registro de medicamentos
-**Id:** REQ-003    
-**Título:** Agregar medicamento  
-**Descripción:** Permitir a la EPS registrar medicamentos con nombre, cantidad y fecha de vencimiento.  
-**Criterios de aceptación:**
-- Formulario para nombre, cantidad y fecha de vencimiento  
-- Validación de campos obligatorios  
-- Guardado en la base de datos  
-- Confirmación de registro exitoso  
-**Prioridad:** ALTA  
+  Scenario: Registro de un nuevo medicamento
+    Given que el usuario accede al formulario de registro de medicamento
+    When completa nombre, cantidad y fecha de vencimiento válidos
+    And envía el formulario
+    Then el medicamento se guarda en la base
+    And se muestra confirmación de registro
 
----
+@alta
+Feature: RF-004 - Actualización de cantidad de medicamentos
+  Como EPS
+  Quiero actualizar la cantidad disponible de un medicamento
+  Para reflejar el stock real
 
-## RF-004 - Actualización de cantidad de medicamentos
-**Id:** REQ-004    
-**Título:** Editar stock  
-**Descripción:** Permitir que la EPS actualice la cantidad disponible de un medicamento.  
-**Criterios de aceptación:**
-- Selección de medicamento existente  
-- Campo editable para cantidad  
-- Guardado de cambios  
-- Confirmación de actualización  
-**Prioridad:** ALTA  
+  Scenario: Actualizar stock
+    Given que el usuario selecciona un medicamento existente
+    When edita la cantidad
+    And guarda los cambios
+    Then el sistema actualiza la cantidad
+    And muestra confirmación
 
----
+@media
+Feature: RF-005 - Eliminación de medicamentos
+  Como EPS
+  Quiero eliminar medicamentos del inventario
+  Para mantener la base de datos limpia
 
-## RF-005 - Eliminación de medicamentos
-**Id:** REQ-005    
-**Título:** Eliminar medicamento  
-**Descripción:** Permitir que la EPS elimine un medicamento del inventario.  
-**Criterios de aceptación:**
-- Selección del medicamento a eliminar  
-- Botón de eliminar  
-- Confirmación antes de borrar  
-- Eliminación en la base de datos  
-**Prioridad:** MEDIA  
+  Scenario: Eliminar medicamento
+    Given que el usuario selecciona un medicamento
+    When presiona eliminar y confirma la acción
+    Then el sistema elimina el medicamento de la base
 
----
+@alta
+Feature: RF-006 - Consulta pública de inventario
+  Como visitante
+  Quiero buscar medicamentos sin iniciar sesión
+  Para conocer disponibilidad
 
-## RF-006 - Consulta pública de inventario
-**Id:** REQ-006    
-**Título:** Búsqueda pública  
-**Descripción:** Permitir a cualquier persona consultar la disponibilidad de medicamentos sin iniciar sesión.  
-**Criterios de aceptación:**
-- Campo de búsqueda por nombre  
-- Lista de resultados con EPS y cantidad disponible  
-- Información básica del medicamento  
-- Interfaz accesible para todos  
-**Prioridad:** ALTA  
+  Scenario: Consulta pública
+    Given que cualquier persona accede al buscador público
+    When ingresa el nombre del medicamento
+    Then el sistema muestra lista con EPS, cantidad y datos básicos
 
----
+@media
+Feature: RF-007 - Búsqueda filtrada de medicamentos
+  Como usuario
+  Quiero filtrar medicamentos por nombre o EPS
+  Para encontrar resultados específicos
 
-## RF-007 - Búsqueda filtrada de medicamentos
-**Id:** REQ-007    
-**Título:** Filtros de búsqueda  
-**Descripción:** Permitir filtrar medicamentos por nombre o EPS.  
-**Criterios de aceptación:**
-- Campos para filtrar por nombre o EPS  
-- Botón de buscar  
-- Resultados filtrados correctamente  
-**Prioridad:** MEDIA  
+  Scenario: Búsqueda filtrada
+    Given que el usuario accede al buscador avanzado
+    When aplica filtros por nombre o EPS
+    Then el sistema muestra resultados filtrados
 
----
+@alta
+Feature: RF-008 - Notificación de bajo stock
+  Como EPS
+  Quiero recibir avisos cuando un medicamento tenga pocas unidades
+  Para actuar antes del desabastecimiento
 
-## RF-008 - Notificación de bajo stock
-**Id:** REQ-008    
-**Título:** Aviso de desabastecimiento  
-**Descripción:** Avisar a la EPS cuando un medicamento tenga pocas unidades disponibles.  
-**Criterios de aceptación:**
-- Configuración de un valor mínimo de stock  
-- Comparación automática con cantidades disponibles  
-- Aviso en pantalla si está bajo el mínimo  
-**Prioridad:** ALTA  
+  Scenario: Aviso por bajo stock
+    Given que existe un valor mínimo configurado para un medicamento
+    When la cantidad disponible es menor a ese valor
+    Then el sistema muestra aviso de bajo stock
 
----
+@media
+Feature: RF-009 - Reporte básico de inventario
+  Como EPS
+  Quiero descargar un listado de medicamentos actuales
+  Para llevar control externo
 
-## RF-009 - Reporte básico de inventario
-**Id:** REQ-009    
-**Título:** Reporte simple  
-**Descripción:** Generar un listado de medicamentos actuales para descarga.  
-**Criterios de aceptación:**
-- Botón de “descargar inventario”  
-- Generación en formato Excel o CSV  
-- Inclusión de nombre, cantidad y fecha de vencimiento  
-**Prioridad:** MEDIA  
+  Scenario: Descargar inventario
+    Given que el usuario accede a la opción de descarga
+    When solicita el reporte
+    Then el sistema genera archivo Excel o CSV con nombre, cantidad y vencimiento
 
----
+@media
+Feature: RF-010 - Roles básicos
+  Como administrador u operador
+  Quiero tener permisos diferenciados
+  Para controlar accesos
 
-## RF-010 - Roles básicos
-**Id:** REQ-010    
-**Título:** Permisos simples  
-**Descripción:** Tener dos tipos de usuario: administrador y operador.  
-**Criterios de aceptación:**
-- Administrador puede agregar, editar y eliminar  
-- Operador solo puede agregar y editar  
-- Bloqueo de funciones no autorizadas  
-**Prioridad:** MEDIA  
+  Scenario: Permisos de administrador
+    Given que el usuario tiene rol administrador
+    Then puede agregar, editar y eliminar medicamentos
 
----
+  Scenario: Permisos de operador
+    Given que el usuario tiene rol operador
+    Then puede agregar y editar medicamentos
+    And no puede eliminar
 
-## RF-011 - Historial de cambios
-**Id:** REQ-011    
-**Título:** Registro simple de movimientos  
-**Descripción:** Guardar un registro de altas, bajas y cambios en medicamentos.  
-**Criterios de aceptación:**
-- Guardar fecha, usuario y acción realizada  
-- Posibilidad de consultar el historial  
-**Prioridad:** MEDIA  
+@media
+Feature: RF-011 - Historial de cambios
+  Como usuario de la EPS
+  Quiero guardar un registro de todas las acciones sobre medicamentos
+  Para poder consultar un historial de movimientos
 
----
+  Scenario: Registrar cambio en inventario
+    Given que un usuario realiza una alta, baja o edición de un medicamento
+    Then el sistema guarda fecha, usuario y acción realizada
 
-## RF-012 - Control de vencimiento
-**Id:** REQ-012    
-**Título:** Aviso de caducidad  
-**Descripción:** Mostrar una alerta cuando un medicamento esté próximo a vencer.  
-**Criterios de aceptación:**
-- Comparar fecha de vencimiento con fecha actual  
-- Mostrar en pantalla si faltan menos de 30 días  
-**Prioridad:** MEDIA  
+  Scenario: Consultar historial
+    Given que el usuario accede a la opción de historial
+    Then el sistema muestra el registro de cambios
 
----
+@media
+Feature: RF-012 - Control de vencimiento
+  Como usuario de la EPS
+  Quiero recibir alertas cuando un medicamento esté próximo a vencer
+  Para tomar acciones preventivas
 
-## RF-013 - Panel principal básico
-**Id:** REQ-013    
-**Título:** Vista general  
-**Descripción:** Mostrar en una pantalla principal la lista de medicamentos y cantidades.  
-**Criterios de aceptación:**
-- Listado de medicamentos  
-- Opción para editar o eliminar desde la lista  
-**Prioridad:** ALTA  
+  Scenario: Aviso por proximidad de vencimiento
+    Given que un medicamento tiene fecha de vencimiento configurada
+    When faltan menos de 30 días para su vencimiento
+    Then el sistema muestra una alerta visible
 
----
+@alta
+Feature: RF-013 - Panel principal básico
+  Como usuario del sistema
+  Quiero ver en una pantalla principal el inventario de medicamentos
+  Para tener una vista general rápida
 
-## RF-014 - Exportar historial
-**Id:** REQ-014    
-**Título:** Descarga de cambios  
-**Descripción:** Permitir descargar el historial de cambios en un archivo.  
-**Criterios de aceptación:**
-- Botón para descargar historial  
-- Archivo en formato CSV  
-**Prioridad:** BAJA  
+  Scenario: Visualizar panel principal
+    Given que el usuario accede al panel principal
+    Then se muestra un listado de medicamentos y cantidades
+    And cada medicamento tiene opción de editar o eliminar
 
----
+@baja
+Feature: RF-014 - Exportar historial
+  Como usuario de la EPS
+  Quiero descargar el historial de cambios en un archivo CSV
+  Para llevar un registro externo
 
-## RF-015 - Importar lista inicial
-**Id:** REQ-015    
-**Título:** Carga inicial de inventario  
-**Descripción:** Permitir cargar medicamentos desde un archivo CSV al iniciar el sistema.  
-**Criterios de aceptación:**
-- Selección de archivo  
-- Validación de datos básicos  
-- Agregado al inventario  
-**Prioridad:** BAJA  
+  Scenario: Descargar historial de cambios
+    Given que el usuario accede a la opción de descarga del historial
+    When solicita el archivo
+    Then el sistema genera y entrega archivo en formato CSV
 
----
+@baja
+Feature: RF-015 - Importar lista inicial
+  Como usuario de la EPS
+  Quiero cargar medicamentos desde un archivo CSV
+  Para iniciar el sistema con un inventario preexistente
 
-## RF-016 - Edición de datos de perfil de EPS
-**Id:** REQ-016    
-**Título:** Actualizar información de perfil  
-**Descripción:** Permitir que la EPS actualice sus datos de contacto e información básica.  
-**Criterios de aceptación:**
-- Formulario editable con datos de perfil (nombre, dirección, teléfono, correo)  
-- Botón para guardar cambios  
-- Confirmación de actualización exitosa  
-**Prioridad:** MEDIA  
+  Scenario: Importar inventario inicial
+    Given que el usuario selecciona un archivo CSV válido
+    When lo carga en el sistema
+    Then los medicamentos se agregan al inventario
 
----
+@media
+Feature: RF-016 - Edición de datos de perfil de EPS
+  Como EPS
+  Quiero actualizar mis datos de perfil
+  Para mantener mi información de contacto al día
 
-## RF-017 - Cerrar sesión
-**Id:** REQ-017    
-**Título:** Logout  
-**Descripción:** Permitir cerrar sesión de forma segura.  
-**Criterios de aceptación:**
-- Botón de cerrar sesión  
-- Redirección a la página de inicio  
-**Prioridad:** ALTA  
+  Scenario: Actualizar perfil de EPS
+    Given que el usuario accede al formulario de perfil
+    When edita los datos (nombre, dirección, teléfono, correo)
+    And guarda los cambios
+    Then el sistema actualiza la información
+    And muestra confirmación
 
----
+@alta
+Feature: RF-017 - Cerrar sesión
+  Como usuario del sistema
+  Quiero poder cerrar sesión de forma segura
+  Para proteger mis datos y cuenta
 
-## RF-018 - Validación de datos en formularios
-**Id:** REQ-018    
-**Título:** Datos correctos  
-**Descripción:** Validar que los datos ingresados sean correctos antes de guardarlos.  
-**Criterios de aceptación:**
-- Campos obligatorios no vacíos  
-- Cantidad numérica positiva  
-- Fechas válidas  
-**Prioridad:** ALTA  
+  Scenario: Logout de usuario
+    Given que el usuario presiona "Cerrar sesión"
+    Then el sistema cierra la sesión
+    And redirige a la página de inicio
 
----
+@alta
+Feature: RF-018 - Validación de datos en formularios
+  Como usuario
+  Quiero que el sistema valide los datos antes de guardarlos
+  Para evitar errores en la información
 
-## RF-019 - Interfaz sencilla para búsqueda
-**Id:** REQ-019    
-**Título:** Buscador rápido  
-**Descripción:** Tener un buscador visible en todo momento para encontrar medicamentos.  
-**Criterios de aceptación:**
-- Campo de búsqueda en la parte superior  
-- Resultados instantáneos  
-**Prioridad:** MEDIA  
+  Scenario: Validar datos antes de guardar
+    Given que el usuario completa un formulario
+    When deja campos obligatorios vacíos, ingresa cantidades negativas o fechas inválidas
+    Then el sistema muestra mensaje de error
+    And no guarda la información
 
----
+@media
+Feature: RF-019 - Interfaz sencilla para búsqueda
+  Como usuario
+  Quiero un buscador visible siempre
+  Para encontrar rápidamente medicamentos
 
-## RF-020 - Soporte básico
-**Id:** REQ-020    
-**Título:** Ayuda en línea  
-**Descripción:** Tener una sección con instrucciones simples de uso.  
-**Criterios de aceptación:**
-- Página con preguntas frecuentes  
-- Información de contacto para dudas  
-**Prioridad:** BAJA  
+  Scenario: Buscador rápido
+    Given que el usuario ve el campo de búsqueda en la parte superior
+    When ingresa texto
+    Then el sistema muestra resultados instantáneos
+
+@baja
+Feature: RF-020 - Soporte básico
+  Como usuario
+  Quiero acceder a una sección de ayuda
+  Para resolver dudas sobre el uso del sistema
+
+  Scenario: Consultar sección de ayuda
+    Given que el usuario accede a la sección de ayuda
+    Then el sistema muestra preguntas frecuentes
+    And muestra información de contacto para dudas
+```
