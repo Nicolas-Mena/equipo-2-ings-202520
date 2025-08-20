@@ -1,5 +1,5 @@
 ```gherkin
-REQUISITOS FUNCIONALES EN NOTACION GHERKIN- MEDICLICK
+REQUISITOS FUNCIONALES EN NOTACION GHERKIN - MEDICLICK
 
 @alta
 Feature: RF-001 - Registro de EPS
@@ -40,7 +40,7 @@ Feature: RF-003 - Registro de medicamentos
     Given que el usuario accede al formulario de registro de medicamento
     When completa nombre, cantidad y fecha de vencimiento válidos
     And envía el formulario
-    Then el medicamento se guarda en la base
+    Then el medicamento se guarda en la base de datos
     And se muestra confirmación de registro
 
 @alta
@@ -65,7 +65,7 @@ Feature: RF-005 - Eliminación de medicamentos
   Scenario: Eliminar medicamento
     Given que el usuario selecciona un medicamento
     When presiona eliminar y confirma la acción
-    Then el sistema elimina el medicamento de la base
+    Then el sistema elimina el medicamento de la base de datos
 
 @alta
 Feature: RF-006 - Consulta pública de inventario
