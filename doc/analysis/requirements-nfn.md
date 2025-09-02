@@ -11,6 +11,7 @@ Feature: RNF-001 - Disponibilidad del sistema
     Given que el sistema está en funcionamiento
     When es entre las 7:00 a.m. y 9:00 p.m.
     Then el sistema debe estar disponible al menos el 99% del tiempo
+Puntos: 3
 
 @alta
 Feature: RNF-002 - Rendimiento de respuesta
@@ -22,6 +23,7 @@ Feature: RNF-002 - Rendimiento de respuesta
     Given que un usuario realiza una consulta o acción
     When el inventario contiene hasta 10,000 registros
     Then el sistema responde en menos de 3 segundos
+Puntos: 5
 
 @media
 Feature: RNF-003 - Escalabilidad del sistema
@@ -33,6 +35,7 @@ Feature: RNF-003 - Escalabilidad del sistema
     Given que aumenta la cantidad de datos y usuarios
     When se requiere más almacenamiento o procesamiento
     Then el sistema permite ampliar capacidad sin rediseñar la arquitectura
+Puntos: 5
 
 @alta
 Feature: RNF-004 - Seguridad de datos
@@ -44,6 +47,7 @@ Feature: RNF-004 - Seguridad de datos
     Given que se envía o almacena información sensible
     When se procesa en el sistema
     Then los datos están cifrados con SSL/TLS y contraseñas encriptadas
+Puntos: 8
 
 @media
 Feature: RNF-005 - Compatibilidad multiplataforma
@@ -55,6 +59,7 @@ Feature: RNF-005 - Compatibilidad multiplataforma
     Given que un usuario accede al sistema
     When lo hace desde Chrome, Firefox o Edge en PC o dispositivo móvil de 5" o más
     Then la interfaz es completamente funcional y responsiva
+Puntos: 5
 
 @media
 Feature: RNF-006 - Usabilidad
@@ -66,6 +71,7 @@ Feature: RNF-006 - Usabilidad
     Given que un usuario nuevo intenta registrar o buscar un medicamento
     When utiliza la interfaz
     Then completa la tarea en menos de 10 minutos sin capacitación formal
+Puntos: 5
 
 @media
 Feature: RNF-007 - Mantenibilidad
@@ -78,6 +84,7 @@ Feature: RNF-007 - Mantenibilidad
     When se implementa el cambio
     Then la interrupción del servicio no supera los 30 minutos
     And existe documentación actualizada
+Puntos: 5
 
 @alta
 Feature: RNF-008 - Respaldo y recuperación
@@ -89,6 +96,7 @@ Feature: RNF-008 - Respaldo y recuperación
     Given que ocurre una pérdida de datos
     When se restaura la copia de seguridad diaria
     Then la información se recupera completamente en menos de 1 hora
+Puntos: 3
 
 @alta
 Feature: RNF-009 - Cumplimiento normativo
@@ -100,6 +108,7 @@ Feature: RNF-009 - Cumplimiento normativo
     Given que el sistema gestiona datos personales
     When se registran, almacenan o procesan
     Then se cumple con la Ley 1581 de 2012 de protección de datos personales en Colombia
+Puntos: 1
 
 @media
 Feature: RNF-010 - Tolerancia a fallos
@@ -112,4 +121,5 @@ Feature: RNF-010 - Tolerancia a fallos
     When los usuarios siguen trabajando
     Then el resto de módulos funciona normalmente
     And se muestra mensaje de error claro
+Puntos: 5
 ```
