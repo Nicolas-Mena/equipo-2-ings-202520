@@ -13,12 +13,14 @@ Feature: RF-001 - Registro de EPS
     And confirma el envío
     Then el sistema guarda los datos en la base
     And muestra mensaje de confirmación
+Puntos: 8    
 
 @alta
 Feature: RF-002 - Inicio de sesión de EPS
   Como usuario de una EPS
   Quiero iniciar sesión con credenciales válidas
   Para acceder al sistema
+
 
   Scenario: Inicio de sesión válido
     Given que el usuario ingresa usuario y contraseña
@@ -29,6 +31,8 @@ Feature: RF-002 - Inicio de sesión de EPS
     Given que el usuario ingresa usuario y contraseña
     When las credenciales son incorrectas
     Then el sistema muestra mensaje de error
+Puntos: 5
+
 
 @alta
 Feature: RF-003 - Registro de medicamentos
@@ -43,6 +47,8 @@ Feature: RF-003 - Registro de medicamentos
     Then el medicamento se guarda en la base de datos
     And se muestra confirmación de registro
 
+Puntos: 8
+
 @alta
 Feature: RF-004 - Actualización de cantidad de medicamentos
   Como EPS
@@ -55,6 +61,7 @@ Feature: RF-004 - Actualización de cantidad de medicamentos
     And guarda los cambios
     Then el sistema actualiza la cantidad
     And muestra confirmación
+Puntos: 5
 
 @media
 Feature: RF-005 - Eliminación de medicamentos
@@ -66,6 +73,7 @@ Feature: RF-005 - Eliminación de medicamentos
     Given que el usuario selecciona un medicamento
     When presiona eliminar y confirma la acción
     Then el sistema elimina el medicamento de la base de datos
+Puntos: 3
 
 @alta
 Feature: RF-006 - Consulta pública de inventario
@@ -77,6 +85,7 @@ Feature: RF-006 - Consulta pública de inventario
     Given que cualquier persona accede al buscador público
     When ingresa el nombre del medicamento
     Then el sistema muestra lista con EPS, cantidad y datos básicos
+Puntos: 5
 
 @media
 Feature: RF-007 - Búsqueda filtrada de medicamentos
@@ -88,6 +97,7 @@ Feature: RF-007 - Búsqueda filtrada de medicamentos
     Given que el usuario accede al buscador avanzado
     When aplica filtros por nombre o EPS
     Then el sistema muestra resultados filtrados
+Puntos 5
 
 @alta
 Feature: RF-008 - Notificación de bajo stock
@@ -99,6 +109,7 @@ Feature: RF-008 - Notificación de bajo stock
     Given que existe un valor mínimo configurado para un medicamento
     When la cantidad disponible es menor a ese valor
     Then el sistema muestra aviso de bajo stock
+Puntos: 5
 
 @media
 Feature: RF-009 - Reporte básico de inventario
@@ -110,6 +121,7 @@ Feature: RF-009 - Reporte básico de inventario
     Given que el usuario accede a la opción de descarga
     When solicita el reporte
     Then el sistema genera archivo Excel o CSV con nombre, cantidad y vencimiento
+Puntos: 5
 
 @media
 Feature: RF-010 - Roles básicos
@@ -125,6 +137,7 @@ Feature: RF-010 - Roles básicos
     Given que el usuario tiene rol operador
     Then puede agregar y editar medicamentos
     And no puede eliminar
+Puntos: 5
 
 @media
 Feature: RF-011 - Historial de cambios
@@ -139,6 +152,7 @@ Feature: RF-011 - Historial de cambios
   Scenario: Consultar historial
     Given que el usuario accede a la opción de historial
     Then el sistema muestra el registro de cambios
+Puntos: 3
 
 @media
 Feature: RF-012 - Control de vencimiento
@@ -150,6 +164,7 @@ Feature: RF-012 - Control de vencimiento
     Given que un medicamento tiene fecha de vencimiento configurada
     When faltan menos de 30 días para su vencimiento
     Then el sistema muestra una alerta visible
+Puntos: 3
 
 @alta
 Feature: RF-013 - Panel principal básico
@@ -161,6 +176,7 @@ Feature: RF-013 - Panel principal básico
     Given que el usuario accede al panel principal
     Then se muestra un listado de medicamentos y cantidades
     And cada medicamento tiene opción de editar o eliminar
+Puntos: 3
 
 @baja
 Feature: RF-014 - Exportar historial
@@ -172,6 +188,7 @@ Feature: RF-014 - Exportar historial
     Given que el usuario accede a la opción de descarga del historial
     When solicita el archivo
     Then el sistema genera y entrega archivo en formato CSV
+Puntos: 2
 
 @baja
 Feature: RF-015 - Importar lista inicial
@@ -183,6 +200,7 @@ Feature: RF-015 - Importar lista inicial
     Given que el usuario selecciona un archivo CSV válido
     When lo carga en el sistema
     Then los medicamentos se agregan al inventario
+Puntos: 5
 
 @media
 Feature: RF-016 - Edición de datos de perfil de EPS
@@ -196,6 +214,7 @@ Feature: RF-016 - Edición de datos de perfil de EPS
     And guarda los cambios
     Then el sistema actualiza la información
     And muestra confirmación
+Puntos: 3
 
 @alta
 Feature: RF-017 - Cerrar sesión
@@ -207,6 +226,8 @@ Feature: RF-017 - Cerrar sesión
     Given que el usuario presiona "Cerrar sesión"
     Then el sistema cierra la sesión
     And redirige a la página de inicio
+Puntos: 3
+
 
 @alta
 Feature: RF-018 - Validación de datos en formularios
@@ -219,6 +240,8 @@ Feature: RF-018 - Validación de datos en formularios
     When deja campos obligatorios vacíos, ingresa cantidades negativas o fechas inválidas
     Then el sistema muestra mensaje de error
     And no guarda la información
+Puntos: 1
+
 
 @media
 Feature: RF-019 - Interfaz sencilla para búsqueda
@@ -230,6 +253,7 @@ Feature: RF-019 - Interfaz sencilla para búsqueda
     Given que el usuario ve el campo de búsqueda en la parte superior
     When ingresa texto
     Then el sistema muestra resultados instantáneos
+Puntos: 2
 
 @baja
 Feature: RF-020 - Soporte básico
@@ -241,4 +265,5 @@ Feature: RF-020 - Soporte básico
     Given que el usuario accede a la sección de ayuda
     Then el sistema muestra preguntas frecuentes
     And muestra información de contacto para dudas
+Puntos: 1
 ```
