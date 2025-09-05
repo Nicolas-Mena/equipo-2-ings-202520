@@ -33,5 +33,4 @@ MediClick está orientado hacia:
 | **Análisis del Sistema** | Documentación completa del análisis de requerimientos | [analysis/](./analysis/) |
 | **Requerimientos Funcionales** | Especificaciones detalladas de las funcionalidades del sistema | [analysis/requirements-fn.md](./analysis/requirements-fn.md) |
 | **Requerimientos No Funcionales** | Criterios de rendimiento, seguridad, usabilidad y restricciones técnicas | [analysis/requirements-nfn.md](./analysis/requirements-nfn.md) |
-
-
+| **Diseño** | Documentación de la fase de diseño: UX, UI, diagramas, decisiones de frontend y backend | [design/index.md](./design/index.md) |
