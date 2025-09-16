@@ -1,3 +1,4 @@
+## Diagrama de modelo relacional
 ```mermaid
 erDiagram
     EPS {
