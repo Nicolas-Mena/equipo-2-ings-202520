@@ -25,3 +25,12 @@ erDiagram
 
     EPS ||--o{ INVENTARIO : "gestiona"
     MEDICAMENTOS ||--o{ INVENTARIO : "pertenece a"
+```
+    
+## Diagrama Ad Hoc
+
+## Diagrama de casos de uso
+
+## Diagrama de secuencia de todos los casos de uso 
+
+## Diagrama de componentes
