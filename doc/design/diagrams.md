@@ -34,3 +34,4 @@ erDiagram
 ## Diagrama de secuencia de todos los casos de uso 
 
 ## Diagrama de componentes
+<img width="566" height="364" alt="Diagrama componentes drawio" src="https://github.com/user-attachments/assets/406a8c7b-49e1-405a-a6be-2e53fbe8c57c" />
