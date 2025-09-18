@@ -28,8 +28,10 @@ erDiagram
 ```
     
 ## Diagrama Ad Hoc
+<img width="735" height="653" alt="Image" src="https://github.com/user-attachments/assets/c18dd533-d9ee-4de1-aaff-7a8d2bc746c4" />
 
 ## Diagrama de casos de uso
+<img width="732" height="709" alt="Image" src="https://github.com/user-attachments/assets/2982e9c6-aade-4e5d-9830-693044e9398f" />
 
 ## Diagrama de secuencia de todos los casos de uso 
 <img width="1091" height="649" alt="Captura de pantalla 2025-09-16 233003" src="https://github.com/user-attachments/assets/a864af72-3c2d-4920-863b-c2aa629703bc" />
