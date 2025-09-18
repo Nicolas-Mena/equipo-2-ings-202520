@@ -32,6 +32,17 @@ erDiagram
 ## Diagrama de casos de uso
 
 ## Diagrama de secuencia de todos los casos de uso 
+<img width="1091" height="649" alt="Captura de pantalla 2025-09-16 233003" src="https://github.com/user-attachments/assets/a864af72-3c2d-4920-863b-c2aa629703bc" />
+
+<img width="914" height="667" alt="Captura de pantalla 2025-09-16 233040" src="https://github.com/user-attachments/assets/bd2df2fb-b397-41b4-b1a8-48da61d27e06" />
+
+<img width="999" height="564" alt="Captura de pantalla 2025-09-16 233059" src="https://github.com/user-attachments/assets/bce56fa0-c098-4dd3-b060-79d17946f36a" />
+
+<img width="1278" height="577" alt="Captura de pantalla 2025-09-16 233108" src="https://github.com/user-attachments/assets/1107355e-cd78-4223-9036-50759ff63763" />
+
+<img width="910" height="630" alt="Captura de pantalla 2025-09-16 233121" src="https://github.com/user-attachments/assets/5371bbdf-8174-4167-b3db-2431de26f77b" />
+
+<img width="1039" height="574" alt="Captura de pantalla 2025-09-16 233130" src="https://github.com/user-attachments/assets/f9e552ff-7d3e-4191-8092-cd9caf8390f7" />
 
 ## Diagrama de componentes
 <img width="566" height="364" alt="Diagrama componentes drawio" src="https://github.com/user-attachments/assets/406a8c7b-49e1-405a-a6be-2e53fbe8c57c" />
