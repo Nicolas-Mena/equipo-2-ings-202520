@@ -22,11 +22,11 @@ Aquí se definen los requisitos funcionales y no funcionales, así como la estru
 | [📑 Análisis - Índice](./doc/analysis/index.md) | Índice y enlaces a requisitos |
 | [⚙️ Requisitos Funcionales](./doc/analysis/requirements-fn.md) | Lista de requisitos funcionales en notación Gherkin |
 | [📋 Requisitos No Funcionales](./doc/analysis/requirements-nfn.md) | Lista de requisitos no funcionales en notación Gherkin |
-| [🖥️ Backend](./be.md) | Justificación del framework de backend |
-| [🎨 Frontend](./fe.md) | Justificación del framework de frontend |
-| [📊 Diagramas](./diagrams.md) | Actualización de diagramas |
-| [🖌️ UI](./ui.md) | Diseño de la interfaz de usuario |
-| [🧭 UX](./ux.md) | Principios y lineamientos de experiencia de usuario |
+| [🖥️ Backend](./doc/design/be.md) | Justificación del framework de backend |
+| [🎨 Frontend](./doc/design/fe.md) | Justificación del framework de frontend |
+| [📊 Diagramas](./doc/design/diagrams.md) | Actualización de diagramas |
+| [🖌️ UI](./doc/design/ui.md) | Diseño de la interfaz de usuario |
+| [🧭 UX](./doc/design/ux.md) | Principios y lineamientos de experiencia de usuario |
 
 ---
 
