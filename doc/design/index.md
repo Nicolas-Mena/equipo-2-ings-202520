@@ -34,3 +34,15 @@ Cada archivo cumple un propósito específico dentro del proceso de diseño:
 | [diagrams.md](./diagrams.md) | Diagramas UML y de modelado |
 | [fe.md](./fe.md) | Decisiones de Frontend |
 | [be.md](./be.md) | Decisiones de Backend |
+
+---
+
+## 🖋️Tablero kanban
+
+# 📌 Tablero Kanban – MediClick
+
+| 🟢 To Do (Pendiente) | 🟡 In Progress (En progreso) | 🔵 Done (Hecho) |
+|----------------------|------------------------------|-----------------|
+| **@alta**<br>RF-001 Registro de EPS<br>RF-002 Inicio de sesión de EPS<br>RF-003 Registro de medicamentos<br>RF-004 Actualización de cantidad de medicamentos<br>RF-006 Consulta pública de inventario<br>RF-008 Notificación de bajo stock<br>RF-013 Panel principal básico<br>RF-017 Cerrar sesión<br>RF-018 Validación de datos en formularios<br>RNF-001 Disponibilidad del sistema<br>RNF-002 Rendimiento de respuesta<br>RNF-004 Seguridad de datos<br>RNF-008 Respaldo y recuperación<br>RNF-009 Cumplimiento normativo |<br>RF-001 Registro de EPS<br>RF-002 Inicio de sesión de EPS | *(vacío por ahora)* |
+| **@media**<br>RF-005 Eliminación de medicamentos<br>RF-007 Búsqueda filtrada de medicamentos<br>RF-009 Reporte básico de inventario<br>RF-010 Roles básicos<br>RF-011 Historial de cambios<br>RF-012 Control de vencimiento<br>RF-016 Edición de perfil EPS<br>RF-019 Interfaz sencilla para búsqueda<br>RNF-003 Escalabilidad del sistema<br>RNF-005 Compatibilidad multiplataforma<br>RNF-006 Usabilidad<br>RNF-007 Mantenibilidad<br>RNF-010 Tolerancia a fallos | | |
+| **@baja**<br>RF-014 Exportar historial<br>RF-015 Importar lista inicial<br>RF-020 Soporte básico | | |
