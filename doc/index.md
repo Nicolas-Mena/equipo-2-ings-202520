@@ -26,6 +26,8 @@ MediClick está orientado hacia:
 - **Padres de familia y cuidadores** responsables de la medicación de terceros
 - **Cualquier usuario del sistema de salud** que valore la agilidad, claridad y simplicidad en el acceso a medicamentos
 
+- **Link Del tablero kanban en trello:** https://trello.com/invite/b/68e985d369181994f423afe0/ATTIde9df04b30b09fcd08f41084f48cbb444DB439E8/kanban-mediclick 
+
 ## Navegación de la Documentación
 
 | Sección | Descripción | Enlace |
