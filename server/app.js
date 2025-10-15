@@ -6,7 +6,6 @@ import {
   obtenerEPS,
   crearEPS,
   obtenerMedicamentos,
-  obtenerInventario,
   obtenerInventarioPorEPS,
   actualizarInventario,
   loginEPS, 
@@ -29,7 +28,6 @@ app.post("/api/eps/login", loginEPS);
 app.get("/api/medicamentos", obtenerMedicamentos);
 
 // ---- INVENTARIO ----
-app.get("/api/inventario", obtenerInventario);
 app.get("/api/inventario/:eps_id", obtenerInventarioPorEPS);
 app.put("/api/inventario", actualizarInventario);
 
