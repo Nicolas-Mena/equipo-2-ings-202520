@@ -1,12 +1,9 @@
-
 -- ===========================================================
---  SCRIPT DE CREACIÓN DE BASE DE DATOS Y TABLAS
+--  SCRIPT DE CREACION DE BASE DE DATOS Y TABLAS
 --  Proyecto: Inventario EPS
 --  Motor: PostgreSQL
 -- ===========================================================
 
--- Recrear la base de datos (opcional, solo si es local)
--- ⚠️ Si ya existe y tiene datos importantes, comenta estas dos líneas
 DROP DATABASE IF EXISTS inventario_eps;
 CREATE DATABASE inventario_eps;
 \c inventario_eps;
@@ -58,9 +55,6 @@ CREATE TABLE inventario (
         ON UPDATE CASCADE
 );
 
--- ===========================================================
---  ÍNDICES
--- ===========================================================
 CREATE INDEX IF NOT EXISTS idx_inventario_eps_id ON inventario (eps_id);
 CREATE INDEX IF NOT EXISTS idx_inventario_medicamento_id ON inventario (medicamento_id);
 
@@ -68,7 +62,6 @@ CREATE INDEX IF NOT EXISTS idx_inventario_medicamento_id ON inventario (medicame
 --  DATOS INICIALES
 -- ===========================================================
 
--- EPS disponibles
 INSERT INTO eps (nombre, nit, email, password) VALUES
 ('Sura EPS', '800111111', 'contacto@sura.com', 'sura123'),
 ('Salud Total', '900222222', 'info@saludtotal.com', 'salud123'),
@@ -82,88 +75,78 @@ INSERT INTO eps (nombre, nit, email, password) VALUES
 -- ===========================================================
 
 INSERT INTO medicamentos (nombre, descripcion) VALUES
--- Analgésicos / Antiinflamatorios
-('Acetaminofén', 'Analgésico y antipirético'),
+('Acetaminofen', 'Analgesico y antipiretico'),
 ('Ibuprofeno', 'Antiinflamatorio no esteroideo'),
 ('Naproxeno', 'Antiinflamatorio no esteroideo'),
-('Diclofenaco', 'Analgésico y antiinflamatorio'),
-('Ácido acetilsalicílico (Aspirina)', 'Analgésico y antiplaquetario'),
-('Metamizol sódico (Dipirona)', 'Analgésico y antipirético'),
+('Diclofenaco', 'Analgesico y antiinflamatorio'),
+('Acido acetilsalicilico (Aspirina)', 'Analgesico y antiplaquetario'),
+('Metamizol sodico (Dipirona)', 'Analgesico y antipiretico'),
 
--- Antibióticos
-('Amoxicilina', 'Antibiótico betalactámico'),
-('Amoxicilina + ácido clavulánico', 'Antibiótico betalactámico con inhibidor de betalactamasas'),
-('Ampicilina', 'Antibiótico betalactámico'),
-('Azitromicina', 'Antibiótico macrólido'),
-('Claritromicina', 'Antibiótico macrólido'),
-('Ciprofloxacino', 'Antibiótico fluoroquinolona'),
-('Cefalexina', 'Antibiótico cefalosporina de primera generación'),
-('Ceftriaxona', 'Antibiótico cefalosporina de tercera generación'),
-('Metronidazol', 'Antibiótico y antiparasitario'),
-('Doxiciclina', 'Antibiótico tetraciclina'),
+('Amoxicilina', 'Antibiotico betalactamico'),
+('Amoxicilina + acido clavulanico', 'Antibiotico betalactamico con inhibidor de betalactamasas'),
+('Ampicilina', 'Antibiotico betalactamico'),
+('Azitromicina', 'Antibiotico macrolido'),
+('Claritromicina', 'Antibiotico macrolido'),
+('Ciprofloxacino', 'Antibiotico fluoroquinolona'),
+('Cefalexina', 'Antibiotico cefalosporina de primera generacion'),
+('Ceftriaxona', 'Antibiotico cefalosporina de tercera generacion'),
+('Metronidazol', 'Antibiotico y antiparasitario'),
+('Doxiciclina', 'Antibiotico tetraciclina'),
 ('Sulfametoxazol + trimetoprima', 'Antibacteriano combinado'),
-('Clindamicina', 'Antibiótico lincosamida'),
-('Gentamicina', 'Antibiótico aminoglucósido'),
+('Clindamicina', 'Antibiotico lincosamida'),
+('Gentamicina', 'Antibiotico aminoglucosido'),
 
--- Antihipertensivos
-('Enalapril', 'Inhibidor de la ECA para la hipertensión'),
-('Losartán', 'Antagonista del receptor de angiotensina II'),
+('Enalapril', 'Inhibidor de la ECA para la hipertension'),
+('Losartan', 'Antagonista del receptor de angiotensina II'),
 ('Amlodipino', 'Bloqueador de canales de calcio'),
 ('Atenolol', 'Betabloqueador'),
-('Hidroclorotiazida', 'Diurético tiazídico'),
-('Furosemida', 'Diurético de asa'),
+('Hidroclorotiazida', 'Diuretico tiazidico'),
+('Furosemida', 'Diuretico de asa'),
 ('Captopril', 'Inhibidor de la ECA'),
 ('Propranolol', 'Betabloqueador no selectivo'),
 ('Espironolactona', 'Antagonista de aldosterona'),
-('Carvedilol', 'Betabloqueador con acción vasodilatadora'),
+('Carvedilol', 'Betabloqueador con accion vasodilatadora'),
 
--- Antidiabéticos
 ('Metformina', 'Biguanida utilizada en diabetes tipo 2'),
 ('Glibenclamida', 'Sulfonilurea hipoglucemiante'),
-('Insulina NPH', 'Insulina de acción intermedia'),
-('Insulina rápida (regular)', 'Insulina de acción rápida'),
+('Insulina NPH', 'Insulina de accion intermedia'),
+('Insulina rapida (regular)', 'Insulina de accion rapida'),
 
--- Psicofármacos
-('Diazepam', 'Ansiolítico benzodiacepínico'),
-('Alprazolam', 'Ansiolítico benzodiacepínico'),
-('Clonazepam', 'Ansiolítico y anticonvulsivante'),
+('Diazepam', 'Ansiolitico benzodiacepinico'),
+('Alprazolam', 'Ansiolitico benzodiacepinico'),
+('Clonazepam', 'Ansiolitico y anticonvulsivante'),
 ('Sertralina', 'Antidepresivo ISRS'),
 ('Fluoxetina', 'Antidepresivo ISRS'),
-('Amitriptilina', 'Antidepresivo tricíclico'),
+('Amitriptilina', 'Antidepresivo triciclico'),
 ('Carbamazepina', 'Anticonvulsivante'),
-('Ácido valproico', 'Anticonvulsivante'),
+('Acido valproico', 'Anticonvulsivante'),
 
--- Gastrointestinales
 ('Omeprazol', 'Inhibidor de la bomba de protones'),
 ('Ranitidina', 'Antagonista H2 (en desuso)'),
 ('Loperamida', 'Antidiarreico'),
-('Domperidona', 'Antiemético y procinético'),
-('Metoclopramida', 'Antiemético'),
-('Sales de rehidratación oral', 'Solución oral para deshidratación'),
+('Domperidona', 'Antiemetico y procinetico'),
+('Metoclopramida', 'Antiemetico'),
+('Sales de rehidratacion oral', 'Solucion oral para deshidratacion'),
 
--- Respiratorios y alérgicos
-('Loratadina', 'Antihistamínico'),
-('Cetirizina', 'Antihistamínico'),
+('Loratadina', 'Antihistaminico'),
+('Cetirizina', 'Antihistaminico'),
 ('Salbutamol', 'Broncodilatador'),
-('Bromhexina', 'Mucolítico y expectorante'),
+('Bromhexina', 'Mucolitico y expectorante'),
 ('Budesonida', 'Corticosteroide inhalado'),
 ('Beclometasona', 'Corticosteroide inhalado'),
-('Ipratropio', 'Broncodilatador anticolinérgico'),
+('Ipratropio', 'Broncodilatador anticolinergico'),
 
--- Antifúngicos y antiparasitarios
-('Fluconazol', 'Antifúngico'),
-('Nistatina', 'Antifúngico'),
+('Fluconazol', 'Antifungico'),
+('Nistatina', 'Antifungico'),
 ('Albendazol', 'Antiparasitario'),
 ('Mebendazol', 'Antiparasitario'),
 ('Ivermectina', 'Antiparasitario'),
 ('Aciclovir', 'Antiviral contra herpes'),
-('Ketoconazol', 'Antifúngico');
+('Ketoconazol', 'Antifungico');
 
 -- ===========================================================
---  INICIALIZACIÓN DE INVENTARIO
+--  INICIALIZACION DE INVENTARIO
 -- ===========================================================
--- Se asigna cantidad 0 a todos los medicamentos por cada EPS
--- Las EPS pueden actualizar estas cantidades después
 
 INSERT INTO inventario (eps_id, medicamento_id, cantidad_disponible)
 SELECT e.eps_id, m.medicamento_id, 0
