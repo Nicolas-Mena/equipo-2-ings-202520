@@ -4,7 +4,7 @@ async function testConnection() {
   try {
 
     const result = await pool.query(`
-    i.inventario_id, e.nombre AS eps, m.nombre AS medicamento,
+    SELECT i.inventario_id, e.nombre AS eps, m.nombre AS medicamento,
            i.cantidad_disponible, i.fecha_actualizacion
     FROM inventario i
     JOIN eps e ON i.eps_id = e.eps_id
