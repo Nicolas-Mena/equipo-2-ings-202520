@@ -1,52 +1,51 @@
-# MediClick - Cliente Frontend
+# MediClick - Frontend Client
 
-## 📋 Descripción
+## 📋 Description
 
-Cliente web para consultar disponibilidad de medicamentos en las EPS de Colombia. Este frontend está diseñado para conectarse con un backend PostgreSQL que gestiona EPS, medicamentos e inventarios.
+This is the frontend client for the MediClick project. It provides a simple interface to view medicine availability across different EPS (Health Promoting Entities) in Colombia. This module is part of a larger system.
 
-## 🗂️ Estructura de Archivos
+## 🗂️ File Structure
 
 ```
 client/
-├── index.html      # Página principal con React CDN
-├── script.js       # Componentes React (usando React.createElement)
-├── mockData.js     # Datos simulados del backend
-├── style.css       # Estilos de la aplicación
-└── README.md       # Esta documentación
+├── index.html      # Main page with React CDN
+├── script.js       # React components (using React.createElement)
+├── style.css       # Application styles
+└── README.md       # This documentation
 ```
 
-## 🎨 Tecnologías
+## 🎨 Technologies
 
 - **React 18** (via CDN)
-- **Babel Standalone** (para JSX en el navegador)
-- **CSS Vanilla**
+- **Babel Standalone** (for JSX in browser)
+- **Vanilla CSS**
 - **JavaScript ES6+**
 
-## 🚀 Cómo Ejecutar (PowerShell o bash)
+## 🚀 How to Run (PowerShell)
 
- Node.js con npx serve
+Node.js with npx serve
 
 ```powershell
 cd ...\client
 npx serve -p 8080
 ```
 
-Luego abre en tu navegador: **http://localhost:8080**
+Then open in your browser: **http://localhost:8080**
 
-## 💡 Funcionalidades
+## 💡 Features
 
-### Para Usuarios (Sin autenticación)
+### For Users (No authentication required)
 
-- ✅ Ver lista de todas las EPS disponibles
-- ✅ Consultar medicamentos disponibles por EPS
-- ✅ Ver cantidad disponible de cada medicamento
-- ✅ Ver estadísticas generales del sistema
+- ✅ View list of all available EPS
+- ✅ Browse medicines available by EPS
+- ✅ Check available quantity for each medicine
+- ✅ View general system statistics
 
-### Para Administradores EPS (Con autenticación)
+### For EPS Administrators (Authentication required)
 
-- ✅ Login con email y password
-- ✅ Todas las funciones de usuario
-- ✅ Gestionar inventario de su EPS
-- ✅ Actualizar cantidades de medicamentos
+- ✅ Login with email and password
+- ✅ All user features
+- ✅ Manage EPS inventory
+- ✅ Update medicine quantities
 
 
