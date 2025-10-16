@@ -8,7 +8,7 @@ import {
   obtenerMedicamentos,
   obtenerInventarioPorEPS,
   actualizarInventario,
-  loginEPS, 
+  loginEPS,
 } from "./controllers/usuariosController.js";
 
 dotenv.config();
@@ -33,4 +33,4 @@ app.put("/api/inventario", actualizarInventario);
 
 // ================== SERVIDOR ==================
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log("Servidor corriendo en puerto ${PORT}"));
+app.listen(PORT, () => console.log(`🚀 Servidor corriendo en puerto ${PORT}`));
