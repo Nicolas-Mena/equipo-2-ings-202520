@@ -7,7 +7,7 @@ export async function obtenerEPS(req, res) {
     const data = await Inventario.getAllEPS();
     res.json(data);
   } catch (error) {
-    console.error("Error al obtener EPS:", error);
+    console.error("❌ Error al obtener EPS:", error);
     res.status(500).json({ error: "Error al obtener EPS" });
   }
 }
@@ -17,7 +17,7 @@ export async function crearEPS(req, res) {
     const nueva = await Inventario.createEPS(req.body);
     res.status(201).json(nueva);
   } catch (error) {
-    console.error("Error al crear EPS:", error);
+    console.error("❌ Error al crear EPS:", error);
     res.status(500).json({ error: "Error al crear EPS" });
   }
 }
@@ -27,22 +27,23 @@ export async function loginEPS(req, res) {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return res.status(400).json({ error: "Email y contraseña requeridos" });
+      return res.status(400).json({ error: "Email y contraseña son requeridos" });
     }
 
-    const eps = await Inventario.loginEPS({ email, password });
+    const eps = await Inventario.loginEPS(email, password);
 
     if (!eps) {
+      console.warn("⚠️ Credenciales incorrectas:", email);
       return res.status(401).json({ error: "Credenciales incorrectas" });
     }
 
-    res.json({
-      message: "Inicio de sesión exitoso",
+    res.status(200).json({
+      message: "✅ Login exitoso",
       eps,
     });
   } catch (error) {
-    console.error("Error en el inicio de sesión:", error);
-    res.status(500).json({ error: "Error en el inicio de sesión" });
+    console.error("❌ Error en el login:", error);
+    res.status(500).json({ error: "Error en el login" });
   }
 }
 
@@ -53,7 +54,7 @@ export async function obtenerMedicamentos(req, res) {
     const data = await Inventario.getAllMedicamentos();
     res.json(data);
   } catch (error) {
-    console.error("Error al obtener medicamentos:", error);
+    console.error("❌ Error al obtener medicamentos:", error);
     res.status(500).json({ error: "Error al obtener medicamentos" });
   }
 }
@@ -71,7 +72,7 @@ export async function obtenerInventarioPorEPS(req, res) {
     const data = await Inventario.getInventarioPorEPS(eps_id);
     res.json(data);
   } catch (error) {
-    console.error("Error al obtener inventario por EPS:", error);
+    console.error("❌ Error al obtener inventario por EPS:", error);
     res.status(500).json({ error: "Error al obtener inventario por EPS" });
   }
 }
@@ -90,7 +91,7 @@ export async function buscarMedicamento(req, res) {
     const data = await Inventario.buscarMedicamentoEnEPS(eps_id, nombre);
     res.json(data);
   } catch (error) {
-    console.error("Error al buscar medicamento:", error);
+    console.error("❌ Error al buscar medicamento:", error);
     res.status(500).json({ error: "Error al buscar medicamento" });
   }
 }
@@ -117,7 +118,7 @@ export async function actualizarInventario(req, res) {
 
     res.json(actualizado);
   } catch (error) {
-    console.error("Error al actualizar inventario:", error);
+    console.error("❌ Error al actualizar inventario:", error);
     res.status(500).json({ error: "Error al actualizar inventario" });
   }
 }

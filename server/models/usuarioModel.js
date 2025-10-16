@@ -1,4 +1,5 @@
 import pool from "../config/db.js";
+import bcrypt from "bcrypt";
 
 // ======== EPS =========
 export async function getAllEPS() {
@@ -51,28 +52,37 @@ export async function createEPS({ nombre, nit, email, password }) {
 }
 
 
-// Verificar inicio de sesión de una EPS (login)
-export async function loginEPS({ email, password }) {
-  const result = await pool.query(
-    `
-    SELECT eps_id, nombre, nit, email, password
-    FROM eps
-    WHERE email = $1
-    `,
-    [email]
-  );
+// ======== LOGIN EPS =========
+export async function loginEPS(email, password) {
+  try {
+    // 1️⃣ Buscar la EPS por email
+    const result = await pool.query("SELECT * FROM eps WHERE email = $1", [email]);
 
-  // Si no existe ese correo
-  if (result.rowCount === 0) return null;
+    if (result.rows.length === 0) {
+      console.log("❌ Usuario no encontrado:", email);
+      return null; // No existe ese correo
+    }
 
-  const eps = result.rows[0];
+    const eps = result.rows[0];
 
-  // ⚠️ Si aún no estás usando bcrypt, solo compara directo
-  if (eps.password !== password) return null;
+    // 2️⃣ Comparar contraseñas con bcrypt
+    const match = await bcrypt.compare(password, eps.password);
 
-  // Devuelve los datos (sin el password)
-  delete eps.password;
-  return eps;
+    if (!match) {
+      console.log("❌ Contraseña incorrecta para:", email);
+      return null; // Contraseña incorrecta
+    }
+
+    // 3️⃣ Si todo ok, eliminar la contraseña antes de devolver
+    delete eps.password;
+
+    console.log("✅ Login exitoso para:", eps.nombre);
+    return eps;
+
+  } catch (error) {
+    console.error("❌ Error en loginEPS:", error);
+    throw error;
+  }
 }
 
 
@@ -85,6 +95,7 @@ export async function getAllMedicamentos() {
   `);
   return result.rows;
 }
+
 
 // ======== INVENTARIO =========
 export async function getInventarioPorEPS(eps_id) {
@@ -107,6 +118,7 @@ export async function getInventarioPorEPS(eps_id) {
   );
   return result.rows;
 }
+
 
 export async function buscarMedicamentoEnEPS(eps_id, nombreMedicamento) {
   const result = await pool.query(
