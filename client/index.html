@@ -1,20 +1,26 @@
-
 <!doctype html>
 <html lang="es">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>MEDICLICK 15 10</title>
+    <title>MEDICLICK - Sistema de Consulta de Medicamentos</title>
     <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
     <div id="root"></div>
 
-  <!-- React + ReactDOM UMD builds and Babel (for JSX in-browser) -->
+    <!-- React + ReactDOM UMD builds and Babel (for JSX in-browser) -->
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Mock Data (para desarrollo sin backend) -->
     <script src="./mockData.js"></script>
+    
+    <!-- API Helper (para conectar con backend real) -->
+    <script src="./api.js"></script>
+    
+    <!-- Aplicación principal -->
     <script type="text/babel" data-presets="react" src="./script.js"></script>
   </body>
 </html>
