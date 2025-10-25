@@ -4,7 +4,9 @@ Date: 24 October 2025
 
 Summary
 -------
-This section provides a concise, verifiable summary in English of the MVP progress achieved during the current sprint. The attached screenshot (provided by the team) lists the functional and non-functional requirements targeted in this sprint. The repository contains both frontend and backend artifacts that demonstrate implementation progress.
+This section provides a concise, verifiable summary in English of the MVP progress achieved during the current sprint. The attached screenshot (provided by the team) lists the functional and non-functional requirements targeted in this sprint. The repository contains both frontend and backend artifacts that de
+![Imagen de WhatsApp 2025-10-24 a las 22 35 03_ae66fd93](https://github.com/user-attachments/assets/8557ef0c-99c9-4d3c-a671-5af78498ebb8)
+monstrate implementation progress.
 
 Key implemented items (requirements referenced in the screenshot)
 ----------------------------------------------------------------
@@ -54,4 +56,5 @@ Attachments & evidence
 Conclusion
 ----------
 This sprint delivered the core MVP flows required for basic operation: user authentication, EPS and medication management, stock updates, a public consultation view, a usable dashboard and improved search. The repository contains the relevant frontend and backend artifacts to validate these claims. Next sprint should focus on automated testing, security hardening and additional UX polish.
+
 
