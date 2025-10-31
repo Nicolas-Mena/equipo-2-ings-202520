@@ -6,6 +6,18 @@ const { useState, useEffect } = React;
 const USE_MOCK_DATA = false;
 
 // ============================================================================
+// FUNCIONES DE VALIDACIÓN GLOBAL
+// ============================================================================
+
+const validarNombreMedicamento = (nombre) => {
+  return /^[a-zA-Z0-9\sáéíóúÁÉÍÓÚñÑ.,()\-]+$/.test(nombre);
+};
+
+const validarStockMedicamento = (stock) => {
+  return stock <= 40000;
+};
+
+// ============================================================================
 // COMPONENTES UI
 // ============================================================================
 
@@ -156,18 +168,10 @@ function AdminLogin({ onLogin, onCancel }) {
 // ============================================================================
 
 function Stats({ stats }) {
-  return React.createElement('div', { className: 'grid grid-3 container', style: { marginTop: 12 } },
+  return React.createElement('div', { className: 'grid grid-1 container', style: { marginTop: 12 } },
     React.createElement('div', { className: 'stat' },
       React.createElement('div', { className: 'value' }, stats.totalEPS),
       React.createElement('div', { className: 'label' }, 'EPS Disponibles')
-    ),
-    React.createElement('div', { className: 'stat' },
-      React.createElement('div', { className: 'value' }, stats.totalMedicamentos),
-      React.createElement('div', { className: 'label' }, 'Medicamentos Total')
-    ),
-    React.createElement('div', { className: 'stat' },
-      React.createElement('div', { className: 'value' }, stats.disponibilidadPromedio),
-      React.createElement('div', { className: 'label' }, 'Disponibilidad Promedio')
     )
   );
 }
@@ -224,7 +228,8 @@ function DashboardView({ userType, loggedEPS, onLogout, onEPSSelect }) {
       ]);
 
       setEPSList(epsData);
-      setStats(statsData);
+      // Solo mantener el total de EPS en las estadísticas
+      setStats({ totalEPS: statsData.totalEPS });
 
       const medByEPS = {};
       await Promise.all(
@@ -316,7 +321,7 @@ function MedCard({ medicamento, isAdmin, onEdit, onDelete }) {
 }
 
 // ============================================================================
-// MODAL DE EDICIÓN - CORREGIDO
+// MODAL DE EDICIÓN - CON VALIDACIONES MEJORADAS
 // ============================================================================
 
 function EditModal({ medicamento, onSave, onClose, eps_id }) {
@@ -326,21 +331,34 @@ function EditModal({ medicamento, onSave, onClose, eps_id }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // CORRECCIÓN: Manejo correcto del input numérico
+  // Validación para cantidad - máximo 40,000
   const handleCantidadChange = (e) => {
     const value = e.target.value;
     // Permitir vacío o solo números
     if (value === '' || /^\d+$/.test(value)) {
+      const numValue = parseInt(value) || 0;
+      if (numValue > 40000) {
+        setError('Se excede la cantidad permitida de stock por medicamento (máximo 40,000)');
+      } else {
+        setError(null);
+      }
       setCantidad(value);
     }
   };
 
   const handleSave = async () => {
+    const cantidadNum = parseInt(cantidad) || 0;
+    
+    // Validación final antes de guardar
+    if (cantidadNum > 40000) {
+      setError('Se excede la cantidad permitida de stock por medicamento (máximo 40,000)');
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
     try {
-      const cantidadNum = parseInt(cantidad) || 0;
       await onSave(medicamento, cantidadNum, descripcion, imagenUrl);
       onClose();
     } catch (err) {
@@ -362,8 +380,10 @@ function EditModal({ medicamento, onSave, onClose, eps_id }) {
         value: cantidad,
         onChange: handleCantidadChange,
         disabled: loading,
-        placeholder: '0'
+        placeholder: '0',
+        max: '40000'
       }),
+      React.createElement('small', { className: 'muted' }, 'Máximo permitido: 40,000 unidades'),
       
       React.createElement('label', null, 'Descripción:'),
       React.createElement('textarea', {
@@ -387,7 +407,7 @@ function EditModal({ medicamento, onSave, onClose, eps_id }) {
         React.createElement('button', { 
           className: 'btn primary', 
           onClick: handleSave,
-          disabled: loading
+          disabled: loading || parseInt(cantidad) > 40000
         }, loading ? 'Guardando...' : 'Guardar')
       )
     )
@@ -395,26 +415,69 @@ function EditModal({ medicamento, onSave, onClose, eps_id }) {
 }
 
 // ============================================================================
-// MODAL CREAR MEDICAMENTO
+// MODAL CREAR MEDICAMENTO - CON VALIDACIONES MEJORADAS
 // ============================================================================
 
 function CreateMedicModal({ onCreate, onClose }) {
   const [nombre, setNombre] = useState('');
   const [descripcion, setDescripcion] = useState('');
   const [imagenUrl, setImagenUrl] = useState('');
+  const [cantidad, setCantidad] = useState('0');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  // Validación para nombre del medicamento - sin caracteres especiales
+  const handleNombreChange = (e) => {
+    const value = e.target.value;
+    // Permitir solo letras, números, espacios y algunos caracteres básicos
+    if (/^[a-zA-Z0-9\sáéíóúÁÉÍÓÚñÑ.,()\-]*$/.test(value)) {
+      setNombre(value);
+    }
+  };
+
+  // Validación para cantidad - máximo 40,000
+  const handleCantidadChange = (e) => {
+    const value = e.target.value;
+    if (value === '' || /^\d+$/.test(value)) {
+      const numValue = parseInt(value) || 0;
+      if (numValue > 40000) {
+        setError('Se excede la cantidad permitida de stock por medicamento (máximo 40,000)');
+      } else {
+        setError(null);
+      }
+      setCantidad(value);
+    }
+  };
+
   const handleCreate = async () => {
+    // Validaciones antes de crear
     if (!nombre.trim()) { 
       setError('El nombre es requerido'); 
       return; 
     }
+
+    // Validar caracteres especiales en el nombre
+    if (!/^[a-zA-Z0-9\sáéíóúÁÉÍÓÚñÑ.,()\-]+$/.test(nombre)) {
+      setError('El nombre del medicamento no permite caracteres especiales');
+      return;
+    }
+
+    const cantidadNum = parseInt(cantidad) || 0;
+    if (cantidadNum > 40000) {
+      setError('Se excede la cantidad permitida de stock por medicamento (máximo 40,000)');
+      return;
+    }
+
     setLoading(true); 
     setError(null);
     
     try {
-      await onCreate({ nombre, descripcion, imagen_url: imagenUrl });
+      await onCreate({ 
+        nombre, 
+        descripcion, 
+        imagen_url: imagenUrl,
+        cantidad_disponible: cantidadNum 
+      });
       onClose();
     } catch (err) {
       setError(err.message || 'Error al crear medicamento');
@@ -432,9 +495,10 @@ function CreateMedicModal({ onCreate, onClose }) {
       React.createElement('input', { 
         type: 'text', 
         value: nombre, 
-        onChange: e => setNombre(e.target.value),
+        onChange: handleNombreChange,
         placeholder: 'Ej: Paracetamol 500mg'
       }),
+      React.createElement('small', { className: 'muted' }, 'No se permiten caracteres especiales'),
       
       React.createElement('label', null, 'Descripción:'),
       React.createElement('textarea', { 
@@ -443,6 +507,15 @@ function CreateMedicModal({ onCreate, onClose }) {
         style: { width: '100%', minHeight: 80, marginTop: 8, padding: '10px', borderRadius: '10px', border: '1px solid #cfd7ea' },
         placeholder: 'Descripción del medicamento'
       }),
+      
+      React.createElement('label', null, 'Cantidad inicial:'),
+      React.createElement('input', { 
+        type: 'text', 
+        value: cantidad, 
+        onChange: handleCantidadChange,
+        placeholder: '0'
+      }),
+      React.createElement('small', { className: 'muted' }, 'Máximo permitido: 40,000 unidades'),
       
       React.createElement('label', null, 'URL imagen:'),
       React.createElement('input', { 
@@ -454,7 +527,11 @@ function CreateMedicModal({ onCreate, onClose }) {
       
       React.createElement('div', { style: { marginTop: 16, display: 'flex', justifyContent: 'flex-end', gap: 8 } },
         React.createElement('button', { className: 'btn', onClick: onClose, disabled: loading }, 'Cancelar'),
-        React.createElement('button', { className: 'btn primary', onClick: handleCreate, disabled: loading }, 
+        React.createElement('button', { 
+          className: 'btn primary', 
+          onClick: handleCreate, 
+          disabled: loading || !nombre.trim() || parseInt(cantidad) > 40000
+        }, 
           loading ? 'Creando...' : 'Crear'
         )
       )
@@ -626,15 +703,9 @@ function EPSDetailView({ eps_id, epsName, userType, loggedEPS, onBack }) {
           React.createElement('button', 
             { 
               className: 'btn', 
-              style: { backgroundColor: '#dc2626', color: '#fff', borderColor: '#dc2626' },
-              onClick: () => {
-                  // Volvemos completamente al inicio (login)
-                  window.location.reload();
-                
-              } 
-            }, 'Salir'
+              onClick: onBack
+            }, 'Volver al Catálogo'
           )
-
         )
       )
     ),
