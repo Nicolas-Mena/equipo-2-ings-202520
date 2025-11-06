@@ -1,5 +1,9 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const base = path.resolve(__dirname, '..'); // server/
 
@@ -37,7 +41,7 @@ if (dbExists) {
 const modelExists = checkFile('models/usuarioModel.js');
 if (modelExists) {
   const modelContent = read('models/usuarioModel.js') || '';
-  const exportsFound = /module\.exports|exports\.|export default/i.test(modelContent);
+  const exportsFound = /module\.exports|exports\.|export\s+/i.test(modelContent);
   results.push({name: 'models/usuarioModel.js: exports found', ok: exportsFound, detail: exportsFound ? 'ok' : 'no exports detected'});
 } else {
   results.push({name: 'models/usuarioModel.js: exports found', ok: false, detail: 'models/usuarioModel.js missing'});

@@ -4,19 +4,14 @@ This folder contains a minimal, dependency-free smoke test for important server 
 
 How to run
 
-- From the repository root (recommended CommonJS run):
-
-  node server/testing/smoke_test.cjs
-
-- Or from the `server/testing` folder:
-
-  node smoke_test.cjs
-
-- If your environment is configured for CommonJS you can also try the JS variant:
+- From the repository root (recommended):
 
   node server/testing/smoke_test.js
 
-  Note: some projects set "type": "module" in `server/package.json`; when that is present Node treats `.js` files as ES modules and `require()` will fail. The `.cjs` file forces CommonJS and is recommended for these smoke checks.
+- Or from the `server/testing` folder:
+
+  node smoke_test.js
+
 
 Behavior
 
