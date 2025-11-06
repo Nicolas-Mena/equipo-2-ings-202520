@@ -85,6 +85,16 @@ When the server starts successfully, you should see:
 ✅ Successful connection to PostgreSQL
 ```
 
+## 🧪 Testing
+
+See `server/testing/README.md` for details about available smoke tests and Jest-style checks. The smoke test is dependency-free and can be run with:
+
+```powershell
+node server\testing\smoke_test.js
+```
+
+The testing README explains each check and how to run the Jest-based `code.test.js` if you decide to install Jest.
+
 ## 🔗 Available API Endpoints
 
 ### EPS (Health Insurance Companies)
