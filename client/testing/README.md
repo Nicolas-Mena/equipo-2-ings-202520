@@ -12,12 +12,22 @@ How to run
 
   node smoke_test.js
 
-Behavior
+What the smoke test checks
 
-- The script performs 5 quick checks: existence of `index.html`, presence of a `<title>` and `<script>` in `index.html`, existence and API-like content in `api.js`, DOM usage in `script.js`, and presence of `style.css`.
-- Exit code 0 = all checks passed. Non-zero = one or more checks failed. The script prints human-readable messages for each check.
+- index.html exists
+- index.html contains a <title> element and at least one <script> tag
+- api.js exists and contains typical API-call patterns (fetch/axios/base URL)
+- script.js exists and contains basic DOM usage (document., querySelector, addEventListener)
+- style.css exists
+
+Behavior and output
+
+- Each check prints a ✓ (pass) or ✗ (fail) with a short detail message.
+- Exit code 0 = all checks passed. Non-zero = one or more checks failed.
 
 Notes
 
-- No external dependencies are required — the script runs with the installed Node.js runtime.
-- If a test fails, inspect the printed output to identify missing files or missing snippets in the source files.
+- The smoke test is fast and safe: it only inspects files and text content — it does not run the server or open network/DB connections.
+- The earlier example unit tests (mathFunctions.test.js) were removed per project request; this README reflects the current testing setup.
+- If you'd like full unit tests (Jest) or CI integration, I can add them next.
+
