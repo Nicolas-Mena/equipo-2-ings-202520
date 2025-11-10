@@ -422,6 +422,18 @@ Contains all application styling:
 
 ## 🚨 Common Issues and Solutions
 
+## 🧪 Testing
+
+For details about the client smoke tests and test guidance, see the testing README:
+
+- `client/testing/README.md` — contains a quick smoke test (`smoke_test.js`) that checks presence of the main client files and a Jest-style `code.test.js` (if you use Jest). Run the smoke test with:
+
+  ```powershell
+  node client\testing\smoke_test.js
+  ```
+
+Read the testing README for more details on what each test does and how to run them.
+
 **Port 8080 already in use:**
 
 ```powershell
