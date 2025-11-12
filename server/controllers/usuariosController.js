@@ -10,7 +10,8 @@ export async function obtenerEPS(req, res) {
     res.json(data);
   } catch (error) {
     console.error("❌ Error al obtener EPS:", error);
-    res.status(500).json({ error: "Error al obtener EPS" });
+    const detail = error && (error.message || error.details || JSON.stringify(error)) ? (error.message || error.details || JSON.stringify(error)) : String(error);
+    res.status(500).json({ error: "Error al obtener EPS", details: detail });
   }
 }
 
