@@ -26,8 +26,19 @@ try {
 
 async function handleResponse(response) {
   if (!response.ok) {
-    const error = await response.json().catch(() => ({ error: 'Error del servidor' }));
-    throw new Error(error.error || `Error HTTP: ${response.status}`);
+    // Try to parse JSON body, otherwise get raw text. Include status for debugging.
+    let bodyText = '';
+    try {
+      const json = await response.json().catch(() => null);
+      if (json) {
+        bodyText = JSON.stringify(json);
+      } else {
+        bodyText = await response.text().catch(() => '');
+      }
+    } catch (e) {
+      bodyText = 'Could not read response body';
+    }
+    throw new Error(`HTTP ${response.status}: ${bodyText}`);
   }
   return response.json();
 }
