@@ -1,25 +1,27 @@
-import pool from "./config/db.js";
+import supabase from './config/db.js';
 
 async function testConnection() {
   try {
+    // Use Supabase select with related tables (assumes foreign keys and relationships are configured)
+    const { data, error } = await supabase
+      .from('inventario')
+      .select(`inventario_id, cantidad_disponible, fecha_actualizacion, eps(nombre), medicamentos(nombre)`) 
+      .order('eps.nombre', { ascending: true });
 
-    const result = await pool.query(`
-    SELECT i.inventario_id, e.nombre AS eps, m.nombre AS medicamento,
-           i.cantidad_disponible, i.fecha_actualizacion
-    FROM inventario i
-    JOIN eps e ON i.eps_id = e.eps_id
-    JOIN medicamentos m ON i.medicamento_id = m.medicamento_id
-    ORDER BY e.nombre, m.nombre;
-  `);
+    if (error) throw error;
 
-
-    console.log("🕒 Conexión exitosa. Fecha del servidor PostgreSQL:");  
-    console.table(result.rows)
-
+    console.log('🕒 Conexión exitosa a Supabase. Inventario:');
+    console.table(
+      (data || []).map(row => ({
+        inventario_id: row.inventario_id,
+        eps: row.eps ? row.eps.nombre : null,
+        medicamento: row.medicamentos ? row.medicamentos.nombre : null,
+        cantidad_disponible: row.cantidad_disponible,
+        fecha_actualizacion: row.fecha_actualizacion,
+      }))
+    );
   } catch (error) {
-    console.error("❌ Error al ejecutar la consulta:", error.message);
-  } finally {
-    pool.end();
+    console.error('❌ Error al ejecutar la consulta:', error.message || error);
   }
 }
 
