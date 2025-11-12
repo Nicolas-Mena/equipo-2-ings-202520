@@ -232,12 +232,21 @@ function DashboardView({ userType, loggedEPS, onLogout, onEPSSelect }) {
       setStats({ totalEPS: statsData.totalEPS });
 
       const medByEPS = {};
-      await Promise.all(
-        epsData.map(async (eps) => {
-          const inventory = await window.API.fetchInventarioByEPS(eps.eps_id);
-          medByEPS[eps.eps_id] = inventory;
-        })
-      );
+      // Load inventories concurrently but tolerate failures per-EPS so one bad
+      // inventory doesn't break the whole dashboard. Use Promise.allSettled
+      // and fallback to empty array when a specific request fails.
+      const promises = epsData.map(eps => window.API.fetchInventarioByEPS(eps.eps_id));
+      const results = await Promise.allSettled(promises);
+      results.forEach((res, idx) => {
+        const epsId = epsData[idx].eps_id;
+        if (res.status === 'fulfilled') {
+          medByEPS[epsId] = res.value || [];
+        } else {
+          console.error('Error cargando inventario para EPS', epsId, res.reason);
+          // fallback vacío para que la UI pueda renderizar el resto
+          medByEPS[epsId] = [];
+        }
+      });
       setMedicinesByEPS(medByEPS);
     } catch (err) {
       setError(err.message || 'Error al cargar datos');
@@ -619,7 +628,12 @@ function EPSDetailView({ eps_id, epsName, userType, loggedEPS, onBack }) {
       setMedicamentos(data);
       setFilteredMedicamentos(data);
     } catch (err) {
-      setError(err.message || 'Error al cargar inventario');
+      console.error('Error fetching inventory for EPS', eps_id, err);
+      const detail = err && err.message ? err.message : JSON.stringify(err);
+      setError('Error al cargar inventario: ' + detail);
+      // fallback empty list so UI continues to function
+      setMedicamentos([]);
+      setFilteredMedicamentos([]);
     } finally {
       setLoading(false);
     }
