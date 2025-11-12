@@ -151,7 +151,8 @@ export async function agregarMedicamentoAEPS(req, res) {
     res.status(201).json(resultado);
   } catch (error) {
     // Error de duplicado (constraint unique_eps_medicamento)
-    if (error.code === '23505') {
+    const msg = (error && error.message) ? String(error.message) : '';
+    if (error && (error.code === '23505' || /unique|duplicate|already exists/i.test(msg))) {
       return res.status(409).json({ error: "Este medicamento ya existe en el inventario de esta EPS" });
     }
 

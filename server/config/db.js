@@ -1,20 +1,25 @@
-import pg from "pg";
-import dotenv from "dotenv";
+import { createClient } from '@supabase/supabase-js';
+import dotenv from 'dotenv';
 
 dotenv.config();
-const { Pool } = pg;
 
-const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT,
-});
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_KEY = process.env.SUPABASE_KEY;
 
-pool
-  .connect()
-  .then(() => console.log("✅ Conexión exitosa a PostgreSQL"))
-  .catch((err) => console.error("❌ Error de conexión a PostgreSQL:", err.message));
+if (!SUPABASE_URL || !SUPABASE_KEY) {
+  console.error('❌ SUPABASE_URL or SUPABASE_KEY not set in environment');
+}
 
-export default pool;
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// Basic health check (optional) - tries to get a minimal response without exposing secrets
+;(async () => {
+  try {
+    await supabase.from('eps').select('eps_id').limit(1);
+    console.log('✅ Supabase client initialized');
+  } catch (err) {
+    console.error('❌ Warning: Supabase initialization check failed:', err.message || err);
+  }
+})();
+
+export default supabase;

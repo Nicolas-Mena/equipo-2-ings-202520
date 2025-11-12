@@ -1,4 +1,4 @@
-import pool from "../config/db.js";
+import supabase from "../config/db.js";
 import bcrypt from "bcrypt";
 
 // ============================================================================
@@ -6,54 +6,65 @@ import bcrypt from "bcrypt";
 // ============================================================================
 
 export async function getAllEPS() {
-  const result = await pool.query(`
-    SELECT eps_id, nombre, nit, email
-    FROM eps
-    ORDER BY nombre;
-  `);
-  return result.rows;
+  const { data, error } = await supabase
+    .from('eps')
+    .select('eps_id, nombre, nit, email')
+    .order('nombre', { ascending: true });
+
+  if (error) throw error;
+  return data || [];
 }
 
 export async function getEPSById(eps_id) {
-  const result = await pool.query(
-    `SELECT eps_id, nombre, nit, email FROM eps WHERE eps_id = $1;`,
-    [eps_id]
-  );
-  return result.rows[0] || null;
+  const { data, error } = await supabase
+    .from('eps')
+    .select('eps_id, nombre, nit, email')
+    .eq('eps_id', eps_id)
+    .limit(1);
+
+  if (error) throw error;
+  return (data && data[0]) || null;
 }
 
 export async function createEPS({ nombre, nit, email, password }) {
   const hashedPassword = await bcrypt.hash(password, 10);
-  
-  const result = await pool.query(
-    `INSERT INTO eps (nombre, nit, email, password)
-     VALUES ($1, $2, $3, $4)
-     RETURNING eps_id, nombre, nit, email;`,
-    [nombre, nit, email, hashedPassword]
-  );
-  
-  return result.rows[0];
+
+  const { data, error } = await supabase
+    .from('eps')
+    .insert([{ nombre, nit, email, password: hashedPassword }])
+    .select('eps_id, nombre, nit, email')
+    .limit(1);
+
+  if (error) throw error;
+  return (data && data[0]) || null;
 }
 
 export async function loginEPS(email, password) {
-  const result = await pool.query("SELECT * FROM eps WHERE email = $1", [email]);
+  const { data, error } = await supabase
+    .from('eps')
+    .select('*')
+    .eq('email', email)
+    .limit(1);
 
-  if (result.rows.length === 0) {
-    console.log("❌ Usuario no encontrado:", email);
+  if (error) throw error;
+
+  if (!data || data.length === 0) {
+    console.log('❌ Usuario no encontrado:', email);
     return null;
   }
 
-  const eps = result.rows[0];
+  const eps = data[0];
   const match = await bcrypt.compare(password, eps.password);
 
   if (!match) {
-    console.log("❌ Contraseña incorrecta para:", email);
+    console.log('❌ Contraseña incorrecta para:', email);
     return null;
   }
 
-  delete eps.password;
-  console.log("✅ Login exitoso para:", eps.nombre);
-  return eps;
+  // Remove password before returning
+  const { password: _pw, ...publicEps } = eps;
+  console.log('✅ Login exitoso para:', publicEps.nombre);
+  return publicEps;
 }
 
 // ============================================================================
@@ -61,22 +72,24 @@ export async function loginEPS(email, password) {
 // ============================================================================
 
 export async function getAllMedicamentos() {
-  const result = await pool.query(`
-    SELECT medicamento_id, nombre
-    FROM medicamentos
-    ORDER BY nombre;
-  `);
-  return result.rows;
+  const { data, error } = await supabase
+    .from('medicamentos')
+    .select('medicamento_id, nombre')
+    .order('nombre', { ascending: true });
+
+  if (error) throw error;
+  return data || [];
 }
 
 export async function createMedicamento({ nombre }) {
-  const result = await pool.query(
-    `INSERT INTO medicamentos (nombre)
-     VALUES ($1)
-     RETURNING medicamento_id, nombre;`,
-    [nombre]
-  );
-  return result.rows[0];
+  const { data, error } = await supabase
+    .from('medicamentos')
+    .insert([{ nombre }])
+    .select('medicamento_id, nombre')
+    .limit(1);
+
+  if (error) throw error;
+  return (data && data[0]) || null;
 }
 
 // ============================================================================
@@ -87,101 +100,92 @@ export async function createMedicamento({ nombre }) {
  * Obtener todos los medicamentos de una EPS específica
  */
 export async function getMedicamentosPorEPS(eps_id) {
-  const result = await pool.query(
-    `SELECT 
-      me.medicamento_eps_id,
-      me.eps_id,
-      me.medicamento_id,
-      m.nombre AS medicamento,
-      me.descripcion,
-      me.imagen_url,
-      me.cantidad_disponible,
-      me.fecha_actualizacion,
-      e.nombre AS eps
-    FROM medicamentos_eps me
-    JOIN medicamentos m ON me.medicamento_id = m.medicamento_id
-    JOIN eps e ON me.eps_id = e.eps_id
-    WHERE me.eps_id = $1
-    ORDER BY m.nombre;`,
-    [eps_id]
+  // Use Supabase RPC or joins via select foreign tables
+  const { data, error } = await supabase
+    .from('medicamentos_eps')
+    .select(`medicamento_eps_id, eps_id, medicamento_id, descripcion, imagen_url, cantidad_disponible, fecha_actualizacion, medicamentos(nombre), eps(nombre)`)
+    .eq('eps_id', eps_id)
+    .order('medicamentos.nombre', { ascending: true });
+
+  if (error) throw error;
+
+  // Normalize the response to match previous shape (medicamento field and eps name)
+  return (
+    (data || []).map((row) => ({
+      medicamento_eps_id: row.medicamento_eps_id,
+      eps_id: row.eps_id,
+      medicamento_id: row.medicamento_id,
+      medicamento: row.medicamentos ? row.medicamentos.nombre : null,
+      descripcion: row.descripcion,
+      imagen_url: row.imagen_url,
+      cantidad_disponible: row.cantidad_disponible,
+      fecha_actualizacion: row.fecha_actualizacion,
+      eps: row.eps ? row.eps.nombre : null,
+    })) || []
   );
-  return result.rows;
 }
 
 /**
  * Buscar medicamentos dentro del inventario de una EPS
  */
 export async function buscarMedicamentoEnEPS(eps_id, nombreMedicamento) {
-  const result = await pool.query(
-    `SELECT 
-      me.medicamento_eps_id,
-      me.eps_id,
-      me.medicamento_id,
-      m.nombre AS medicamento,
-      me.descripcion,
-      me.imagen_url,
-      me.cantidad_disponible,
-      me.fecha_actualizacion,
-      e.nombre AS eps
-    FROM medicamentos_eps me
-    JOIN medicamentos m ON me.medicamento_id = m.medicamento_id
-    JOIN eps e ON me.eps_id = e.eps_id
-    WHERE me.eps_id = $1
-      AND LOWER(m.nombre) LIKE LOWER('%' || $2 || '%')
-    ORDER BY m.nombre;`,
-    [eps_id, nombreMedicamento]
+  const { data, error } = await supabase
+    .from('medicamentos_eps')
+    .select(`medicamento_eps_id, eps_id, medicamento_id, descripcion, imagen_url, cantidad_disponible, fecha_actualizacion, medicamentos(nombre), eps(nombre)`)
+    .eq('eps_id', eps_id)
+    .ilike('medicamentos.nombre', `%${nombreMedicamento}%`)
+    .order('medicamentos.nombre', { ascending: true });
+
+  if (error) throw error;
+
+  return (
+    (data || []).map((row) => ({
+      medicamento_eps_id: row.medicamento_eps_id,
+      eps_id: row.eps_id,
+      medicamento_id: row.medicamento_id,
+      medicamento: row.medicamentos ? row.medicamentos.nombre : null,
+      descripcion: row.descripcion,
+      imagen_url: row.imagen_url,
+      cantidad_disponible: row.cantidad_disponible,
+      fecha_actualizacion: row.fecha_actualizacion,
+      eps: row.eps ? row.eps.nombre : null,
+    })) || []
   );
-  return result.rows;
 }
 
 /**
  * Agregar un medicamento al inventario de una EPS
  */
 export async function agregarMedicamentoAEPS({ eps_id, medicamento_id, descripcion, imagen_url, cantidad_disponible }) {
-  const result = await pool.query(
-    `INSERT INTO medicamentos_eps (eps_id, medicamento_id, descripcion, imagen_url, cantidad_disponible)
-     VALUES ($1, $2, $3, $4, $5)
-     RETURNING medicamento_eps_id, eps_id, medicamento_id, descripcion, imagen_url, cantidad_disponible, fecha_actualizacion;`,
-    [eps_id, medicamento_id, descripcion || null, imagen_url || null, cantidad_disponible || 0]
-  );
-  return result.rows[0];
+  const { data, error } = await supabase
+    .from('medicamentos_eps')
+    .insert([{ eps_id, medicamento_id, descripcion: descripcion || null, imagen_url: imagen_url || null, cantidad_disponible: cantidad_disponible || 0 }])
+    .select('medicamento_eps_id, eps_id, medicamento_id, descripcion, imagen_url, cantidad_disponible, fecha_actualizacion')
+    .limit(1);
+
+  if (error) throw error;
+  return (data && data[0]) || null;
 }
 
 /**
  * Actualizar cantidad, descripción e imagen de un medicamento en una EPS
  */
 export async function actualizarMedicamentoEPS({ eps_id, medicamento_id, cantidad, descripcion, imagen_url }) {
-  const campos = ['fecha_actualizacion = CURRENT_TIMESTAMP'];
-  const valores = [eps_id, medicamento_id];
-  let paramIndex = 3;
+  const updates = { fecha_actualizacion: new Date().toISOString() };
+  if (cantidad !== undefined) updates.cantidad_disponible = cantidad;
+  if (descripcion !== undefined) updates.descripcion = descripcion;
+  if (imagen_url !== undefined) updates.imagen_url = imagen_url;
 
-  if (cantidad !== undefined) {
-    campos.push(`cantidad_disponible = $${paramIndex}`);
-    valores.push(cantidad);
-    paramIndex++;
-  }
+  const { data, error } = await supabase
+    .from('medicamentos_eps')
+    .update(updates)
+    .eq('eps_id', eps_id)
+    .eq('medicamento_id', medicamento_id)
+    .select('medicamento_eps_id, eps_id, medicamento_id, descripcion, imagen_url, cantidad_disponible, fecha_actualizacion')
+    .limit(1);
 
-  if (descripcion !== undefined) {
-    campos.push(`descripcion = $${paramIndex}`);
-    valores.push(descripcion);
-    paramIndex++;
-  }
-
-  if (imagen_url !== undefined) {
-    campos.push(`imagen_url = $${paramIndex}`);
-    valores.push(imagen_url);
-    paramIndex++;
-  }
-
-  const result = await pool.query(
-    `UPDATE medicamentos_eps
-     SET ${campos.join(', ')}
-     WHERE eps_id = $1 AND medicamento_id = $2
-     RETURNING medicamento_eps_id, eps_id, medicamento_id, descripcion, imagen_url, cantidad_disponible, fecha_actualizacion;`,
-    valores
-  );
-
-  return result.rows[0];
+  if (error) throw error;
+  return (data && data[0]) || null;
 }
 
 /**
@@ -189,13 +193,16 @@ export async function actualizarMedicamentoEPS({ eps_id, medicamento_id, cantida
  * (NO elimina el medicamento del catálogo general)
  */
 export async function eliminarMedicamentoDeEPS(eps_id, medicamento_id) {
-  const result = await pool.query(
-    `DELETE FROM medicamentos_eps
-     WHERE eps_id = $1 AND medicamento_id = $2
-     RETURNING medicamento_eps_id;`,
-    [eps_id, medicamento_id]
-  );
-  return result.rows[0];
+  const { data, error } = await supabase
+    .from('medicamentos_eps')
+    .delete()
+    .eq('eps_id', eps_id)
+    .eq('medicamento_id', medicamento_id)
+    .select('medicamento_eps_id')
+    .limit(1);
+
+  if (error) throw error;
+  return (data && data[0]) || null;
 }
 
 // ============================================================================
@@ -203,18 +210,31 @@ export async function eliminarMedicamentoDeEPS(eps_id, medicamento_id) {
 // ============================================================================
 
 export async function getEstadisticas() {
-  const totalEPSResult = await pool.query(`SELECT COUNT(*) as total FROM eps;`);
-  const totalMedicamentosResult = await pool.query(`SELECT SUM(cantidad_disponible) as total FROM medicamentos_eps;`);
-  const promedioResult = await pool.query(`SELECT AVG(cantidad_disponible) as promedio FROM medicamentos_eps;`);
-
-  const totalEPS = parseInt(totalEPSResult.rows[0].total) || 0;
-  const totalMedicamentos = parseInt(totalMedicamentosResult.rows[0].total) || 0;
-  const promedioDisponibilidad = parseFloat(promedioResult.rows[0].promedio) || 0;
+  const [{ count: totalEPS }, { sum: totalMedicamentos }, { avg: promedio }] = await Promise.all([
+    (async () => {
+      const { count, error } = await supabase.from('eps').select('*', { count: 'exact', head: true });
+      if (error) throw error;
+      return { count };
+    })(),
+    (async () => {
+      const { data, error } = await supabase.from('medicamentos_eps').select('cantidad_disponible');
+      if (error) throw error;
+      const total = (data || []).reduce((s, r) => s + (r.cantidad_disponible || 0), 0);
+      return { sum: total };
+    })(),
+    (async () => {
+      const { data, error } = await supabase.from('medicamentos_eps').select('cantidad_disponible');
+      if (error) throw error;
+      const arr = (data || []).map(r => r.cantidad_disponible || 0);
+      const avg = arr.length ? arr.reduce((a,b) => a + b, 0) / arr.length : 0;
+      return { avg };
+    })(),
+  ]);
 
   return {
-    totalEPS,
-    totalMedicamentos,
-    disponibilidadPromedio: Math.round(promedioDisponibilidad)
+    totalEPS: parseInt(totalEPS) || 0,
+    totalMedicamentos: parseInt(totalMedicamentos) || 0,
+    disponibilidadPromedio: Math.round(parseFloat(promedio) || 0)
   };
 }
 
@@ -222,39 +242,33 @@ export async function getEstadisticas() {
  * Crear medicamento en catálogo general Y agregarlo a una EPS específica
  */
 export async function crearYAgregarMedicamento({ eps_id, nombre, descripcion, imagen_url, cantidad_disponible }) {
-  const client = await pool.connect();
-  
-  try {
-    await client.query('BEGIN');
+  // Supabase doesn't support multi-statement transactions across inserts in a single call easily without using RLS/Functions.
+  // We'll create the medicamento then add the medicamentos_eps referencing its id.
+  const { data: medData, error: medError } = await supabase
+    .from('medicamentos')
+    .insert([{ nombre }])
+    .select('medicamento_id, nombre')
+    .limit(1);
 
-    // 1. Crear medicamento en catálogo general
-    const medResult = await client.query(
-      `INSERT INTO medicamentos (nombre)
-       VALUES ($1)
-       RETURNING medicamento_id, nombre;`,
-      [nombre]
-    );
+  if (medError) throw medError;
+  const nuevoMedicamento = (medData && medData[0]) || null;
 
-    const nuevoMedicamento = medResult.rows[0];
+  const { data: meData, error: meError } = await supabase
+    .from('medicamentos_eps')
+    .insert([{
+      eps_id,
+      medicamento_id: nuevoMedicamento.medicamento_id,
+      descripcion: descripcion || null,
+      imagen_url: imagen_url || null,
+      cantidad_disponible: cantidad_disponible || 0
+    }])
+    .select('medicamento_eps_id, eps_id, medicamento_id, descripcion, imagen_url, cantidad_disponible, fecha_actualizacion')
+    .limit(1);
 
-    // 2. Agregar a la EPS específica
-    const meResult = await client.query(
-      `INSERT INTO medicamentos_eps (eps_id, medicamento_id, descripcion, imagen_url, cantidad_disponible)
-       VALUES ($1, $2, $3, $4, $5)
-       RETURNING medicamento_eps_id, eps_id, medicamento_id, descripcion, imagen_url, cantidad_disponible, fecha_actualizacion;`,
-      [eps_id, nuevoMedicamento.medicamento_id, descripcion || null, imagen_url || null, cantidad_disponible || 0]
-    );
+  if (meError) throw meError;
 
-    await client.query('COMMIT');
-
-    return {
-      medicamento: nuevoMedicamento,
-      medicamento_eps: meResult.rows[0]
-    };
-  } catch (error) {
-    await client.query('ROLLBACK');
-    throw error;
-  } finally {
-    client.release();
-  }
+  return {
+    medicamento: nuevoMedicamento,
+    medicamento_eps: (meData && meData[0]) || null
+  };
 }

@@ -268,17 +268,21 @@ The project uses **ES2022 (Modern ECMAScript)** enabled by `"type": "module"` in
 
 The `.env` file must contain:
 
+The server now uses Supabase as its database backend. The `.env` file must contain the following Supabase variables (instead of the previous Postgres fields):
+
 ```
-# Database Connection
-DB_USER=postgres
-DB_PASSWORD=your_secure_password
-DB_HOST=localhost
-DB_NAME=inventario_eps
-DB_PORT=5432
+# Supabase
+SUPABASE_URL=https://your-project-ref.supabase.co
+SUPABASE_KEY=your-anon-or-service-role-key
 
 # Server Configuration
 PORT=3000
 ```
+
+Notes on keys:
+- Use the `anon` public key for client-like operations, and the `service_role` key for server operations that require elevated privileges. Keep `SUPABASE_KEY` secret in production (use `service_role` in secure server environments).
+
+If you previously used direct Postgres connection environment variables (DB_USER/DB_PASSWORD/DB_HOST/DB_NAME/DB_PORT), they are no longer required for the server code in this repo.
 
 **Important:** Never commit the `.env` file to version control. Add it to `.gitignore`.
 
@@ -344,8 +348,63 @@ npm start        # Start server in production mode
 npm run initdb   # Initialize database (if initDB.js exists)
 ```
 
+## Supabase migration notes
+
+
+## Run with Supabase (commands)
+
+Follow these steps (PowerShell examples) to run the server connected to Supabase locally.
+
+1) Install the Supabase client dependency (from the `server` folder or repo root):
+
+```powershell
+# from repo root
+npm install @supabase/supabase-js
+```
+
+2) Create a `.env` file with your Supabase values. Replace the placeholders with your project values.
+
+```powershell
+# from server folder (PowerShell here-string)
+@"
+SUPABASE_URL=https://your-project-ref.supabase.co
+SUPABASE_KEY=your-service-role-or-anon-key
+PORT=3000
+"@ | Out-File -Encoding UTF8 .env
+```
+
+Alternatively, set environment variables for the current session (temporary):
+
+```powershell
+
 ## 🔄 API Request Examples
 
+```
+
+3) Start the server (from the repo root):
+
+```powershell
+# development (with nodemon if configured)
+npm run dev
+
+# production
+npm start
+```
+
+4) Verify the connection and endpoints
+
+- The server's startup logs include a Supabase initialization message. You should see `✅ Supabase client initialized` or a warning if the check failed.
+- Try a quick request to an endpoint:
+
+```powershell
+# example: list EPS
+curl http://localhost:3000/api/eps
+```
+
+Notes
+
+- Use the `service_role` key for server-side operations that require elevated privileges. Keep it secret (do not commit it).
+- If you prefer to store secrets in your system environment rather than a `.env` file, set them in your hosting environment or use PowerShell/User environment settings.
 ### Create a new EPS
 
 ```bash
