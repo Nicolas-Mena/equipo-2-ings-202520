@@ -54,7 +54,37 @@ export async function loginEPS(email, password) {
   }
 
   const eps = data[0];
-  const match = await bcrypt.compare(password, eps.password);
+  // First try bcrypt compare. If it fails, allow a one-time plaintext
+  // fallback: if the stored password equals the provided password, then
+  // hash it and update the DB so future logins use the hash. This helps
+  // when migrating from plain-text passwords without running the bulk
+  // migration script.
+  let match = false;
+  try {
+    match = await bcrypt.compare(password, eps.password || '');
+  } catch (e) {
+    console.warn('⚠️ bcrypt.compare threw:', e && e.message ? e.message : e);
+    match = false;
+  }
+
+  if (!match) {
+    // Fallback: if stored password is plain text and matches, migrate it
+    if (typeof eps.password === 'string' && password === eps.password) {
+      // hash and update
+      try {
+        const newHash = await bcrypt.hash(password || '', 10);
+        const { error: updateErr } = await supabase
+          .from('eps')
+          .update({ password: newHash })
+          .eq('eps_id', eps.eps_id);
+        if (updateErr) console.error('❌ Error updating hashed password:', updateErr);
+        else console.log(`🔁 Migrated plaintext password for EPS ${eps.eps_id}`);
+        match = true;
+      } catch (hashErr) {
+        console.error('❌ Error hashing password during fallback migration:', hashErr);
+      }
+    }
+  }
 
   if (!match) {
     console.log('❌ Contraseña incorrecta para:', email);
