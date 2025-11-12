@@ -119,52 +119,50 @@ export async function getMedicamentosPorEPS(eps_id) {
     .from('medicamentos_eps')
     .select(`medicamento_eps_id, eps_id, medicamento_id, descripcion, imagen_url, cantidad_disponible, fecha_actualizacion, medicamentos(nombre), eps(nombre)`)
     .eq('eps_id', eps_id)
-    .order('medicamentos.nombre', { ascending: true });
+    // Note: ordering by a nested/foreign field (medicamentos.nombre) is not
+    // supported by the Supabase client in this form and causes parse errors
+    // (see: "failed to parse order (medicamentos.nombre,asc)"). We'll sort
+    // in JavaScript after retrieving the rows.
+
+    ;
 
   if (error) throw error;
 
   // Normalize the response to match previous shape (medicamento field and eps name)
-  return (
-    (data || []).map((row) => ({
-      medicamento_eps_id: row.medicamento_eps_id,
-      eps_id: row.eps_id,
-      medicamento_id: row.medicamento_id,
-      medicamento: row.medicamentos ? row.medicamentos.nombre : null,
-      descripcion: row.descripcion,
-      imagen_url: row.imagen_url,
-      cantidad_disponible: row.cantidad_disponible,
-      fecha_actualizacion: row.fecha_actualizacion,
-      eps: row.eps ? row.eps.nombre : null,
-    })) || []
-  );
+  const normalized = (data || []).map((row) => ({
+    medicamento_eps_id: row.medicamento_eps_id,
+    eps_id: row.eps_id,
+    medicamento_id: row.medicamento_id,
+    medicamento: row.medicamentos ? row.medicamentos.nombre : null,
+    descripcion: row.descripcion,
+    imagen_url: row.imagen_url,
+    cantidad_disponible: row.cantidad_disponible,
+    fecha_actualizacion: row.fecha_actualizacion,
+    eps: row.eps ? row.eps.nombre : null,
+  }));
+
+  // Sort by medicamento name (case-insensitive) as a fallback because
+  // server-side ordering by nested fields isn't supported here.
+  normalized.sort((a, b) => {
+    const na = (a.medicamento || '').toLowerCase();
+    const nb = (b.medicamento || '').toLowerCase();
+    if (na < nb) return -1;
+    if (na > nb) return 1;
+    return 0;
+  });
+
+  return normalized;
 }
 
 /**
  * Buscar medicamentos dentro del inventario de una EPS
  */
 export async function buscarMedicamentoEnEPS(eps_id, nombreMedicamento) {
-  const { data, error } = await supabase
-    .from('medicamentos_eps')
-    .select(`medicamento_eps_id, eps_id, medicamento_id, descripcion, imagen_url, cantidad_disponible, fecha_actualizacion, medicamentos(nombre), eps(nombre)`)
-    .eq('eps_id', eps_id)
-    .ilike('medicamentos.nombre', `%${nombreMedicamento}%`)
-    .order('medicamentos.nombre', { ascending: true });
-
-  if (error) throw error;
-
-  return (
-    (data || []).map((row) => ({
-      medicamento_eps_id: row.medicamento_eps_id,
-      eps_id: row.eps_id,
-      medicamento_id: row.medicamento_id,
-      medicamento: row.medicamentos ? row.medicamentos.nombre : null,
-      descripcion: row.descripcion,
-      imagen_url: row.imagen_url,
-      cantidad_disponible: row.cantidad_disponible,
-      fecha_actualizacion: row.fecha_actualizacion,
-      eps: row.eps ? row.eps.nombre : null,
-    })) || []
-  );
+  // Supabase doesn't support ilike on nested fields like 'medicamentos.nombre'
+  // in this select form; fetch the EPS inventory and filter client-side.
+  const all = await getMedicamentosPorEPS(eps_id);
+  const q = (nombreMedicamento || '').toLowerCase();
+  return all.filter((row) => (row.medicamento || '').toLowerCase().includes(q));
 }
 
 /**
