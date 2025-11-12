@@ -102,7 +102,9 @@ export async function obtenerMedicamentosDeEPS(req, res) {
     res.json(data);
   } catch (error) {
     console.error("❌ Error al obtener medicamentos de EPS:", error);
-    res.status(500).json({ error: "Error al obtener medicamentos de EPS" });
+    // Include error details in the response temporarily to help debugging the 500
+    const detail = error && (error.message || error.details || JSON.stringify(error)) ? (error.message || error.details || JSON.stringify(error)) : String(error);
+    res.status(500).json({ error: "Error al obtener medicamentos de EPS", details: detail });
   }
 }
 
