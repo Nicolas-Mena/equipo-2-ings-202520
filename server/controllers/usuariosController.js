@@ -48,7 +48,15 @@ export async function loginEPS(req, res) {
 
     const eps = await Model.loginEPS(email, password);
     if (!eps) {
-      return res.status(401).json({ error: "Credenciales incorrectas" });
+      // Try to determine whether the user email exists to help debug (temporary)
+      try {
+        const exists = await Model.getEPSByEmail(email);
+        const detail = exists ? 'wrong_password' : 'user_not_found';
+        return res.status(401).json({ error: "Credenciales incorrectas", details: detail });
+      } catch (innerErr) {
+        console.error('❌ Error checking EPS by email:', innerErr);
+        return res.status(401).json({ error: "Credenciales incorrectas" });
+      }
     }
 
     res.status(200).json({ message: "✅ Login exitoso", eps });

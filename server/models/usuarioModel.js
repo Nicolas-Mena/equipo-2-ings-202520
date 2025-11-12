@@ -67,6 +67,20 @@ export async function loginEPS(email, password) {
   return publicEps;
 }
 
+/**
+ * Obtener EPS por email (sin contraseña) - helper para debugging
+ */
+export async function getEPSByEmail(email) {
+  const { data, error } = await supabase
+    .from('eps')
+    .select('eps_id, nombre, nit, email')
+    .eq('email', email)
+    .limit(1);
+
+  if (error) throw error;
+  return (data && data[0]) || null;
+}
+
 // ============================================================================
 // MEDICAMENTOS (Catálogo General)
 // ============================================================================
