@@ -2,8 +2,23 @@
 // API HELPER - Conexión Frontend con Backend (REDISEÑADO)
 // ============================================================================
 
-// Deployed backend URL (Render)
-const API_URL = 'https://equipo-2-ings-202520.onrender.com';
+// API base URL selection (runtime-configurable)
+const DEFAULT_API = 'https://equipo-2-ings-202520.onrender.com';
+let API_URL = DEFAULT_API;
+
+try {
+  // Allow a runtime override injected by the host (e.g. window.__API_URL__)
+  if (typeof window !== 'undefined' && window.__API_URL__) {
+    API_URL = window.__API_URL__;
+  } else if (typeof location !== 'undefined') {
+    // If running locally during development, point to localhost backend
+    if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+      API_URL = 'http://localhost:3000';
+    }
+  }
+} catch (e) {
+  API_URL = DEFAULT_API;
+}
 
 // ============================================================================
 // FUNCIONES AUXILIARES
