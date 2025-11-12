@@ -2,7 +2,8 @@
 // API HELPER - Conexión Frontend con Backend (REDISEÑADO)
 // ============================================================================
 
-const API_URL = 'http://localhost:3000';
+// Deployed backend URL (Render)
+const API_URL = 'https://equipo-2-ings-202520.onrender.com';
 
 // ============================================================================
 // FUNCIONES AUXILIARES
