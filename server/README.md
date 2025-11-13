@@ -1,461 +1,467 @@
-# Server - General README
+# MediClick - Backend Server
 
-## 📋 Project Overview
+> REST API for real-time medicine inventory management system for EPS (Health Promotion Entities) in Colombia
 
-This is the **backend server** for the EPS Inventory Management System. It provides a RESTful API for managing health insurance companies (EPS), medications, and inventory records. The server is built with **Express.js** and connects to a **PostgreSQL** database to handle all data persistence.
+## 📋 Description
 
-### Project Structure
+MediClick Server is a Node.js REST API that provides backend services for medicine inventory consultation and management across different EPS in Colombia. It uses Supabase as the database provider and implements secure authentication with bcrypt.
+
+## 🚀 Technologies
+
+- **Node.js** - JavaScript runtime
+- **Express.js** - Web framework
+- **Supabase** - PostgreSQL database provider
+- **bcrypt** - Password hashing
+- **CORS** - Cross-origin resource sharing
+- **dotenv** - Environment variable management
+
+## 📁 Project Structure
 
 ```
 server/
-├── config/              # Database configuration files
-│   └── db.js           # PostgreSQL connection pool
-├── controllers/         # HTTP request handlers and business logic
-│   └── usuariosController.js
-├── models/             # Database queries and operations
-│   └── usuarioModel.js
-├── node_modules/       # Project dependencies
-├── .env                # Environment variables (not included in repo)
-├── app.js              # Main Express server file
-├── migrarPasswords.js  # Password migration utility
-├── probarLoginEPS.js   # Login testing utility
-├── package.json        # Dependencies and scripts
-└── package-lock.json   # Locked dependency versions
+├── config/
+│   ├── db.js              # Supabase client configuration
+│   └── initDB.js          # Database initialization script
+├── controllers/
+│   └── usuariosController.js  # Route controllers
+├── models/
+│   └── usuarioModel.js    # Data access layer
+├── app.js                 # Express app and routes
+├── package.json           # Dependencies and scripts
+├── .env                   # Environment variables (not in repo)
+└── README.md             # This file
 ```
 
-## 🚀 Quick Start
+## ⚙️ Configuration
 
-### Prerequisites
+### Environment Variables
 
-- Node.js (v14 or higher)
-- PostgreSQL (v14 or higher)
-- npm or yarn package manager
+Create a `.env` file in the server root with:
 
-### Installation
+```env
+# === Supabase Configuration ===
+SUPABASE_URL=your_supabase_project_url
+SUPABASE_KEY=your_supabase_anon_key
 
-1. Clone or download the project and navigate to the server folder:
+# === Server Configuration ===
+PORT=3000
 
-```bash
-cd server
-```
-
-2. Install all dependencies:
-
-```bash
-npm install
-```
-
-3. Create a `.env` file in the root of the server folder with your database credentials:
-
-```
+# === Legacy PostgreSQL (if not using Supabase) ===
 DB_USER=postgres
-DB_PASSWORD=your_secure_password
+DB_PASSWORD=your_password
 DB_HOST=localhost
 DB_NAME=inventario_eps
 DB_PORT=5432
-PORT=3000
 ```
 
-4. Ensure PostgreSQL is running and create the database:
+**Important:** Never commit the `.env` file to version control.
 
+## 🔧 Installation
+
+### Prerequisites
+
+- Node.js >= 14.x
+- npm >= 6.x
+- Supabase account and project
+
+### Installation Steps
+
+1. **Clone the repository**
 ```bash
-createdb inventario_eps
+git clone <repository-url>
+cd server
 ```
 
-5. Create the required database tables. You can run the initialization script if available, or manually create the tables using the SQL schema provided in the database documentation.
+2. **Install dependencies**
+```bash
+npm install
+```
 
-### Running the Server
+3. **Configure environment variables**
+```bash
+cp .env.example .env
+# Edit .env with your credentials
+```
 
-**Development mode** (with auto-reload):
+4. **Initialize database (optional)**
+```bash
+npm run initdb
+```
 
+## 🎮 Available Scripts
+
+### Development Mode
 ```bash
 npm run dev
 ```
+Starts the server with nodemon (auto-restart on changes) on port 3000
 
-**Production mode**:
-
+### Production Mode
 ```bash
 npm start
 ```
+Starts the server with node
 
-When the server starts successfully, you should see:
-
-```
-🚀 Servidor corriendo en puerto 3000
-✅ Successful connection to PostgreSQL
-```
-
-## 🧪 Testing
-
-See `server/testing/README.md` for details about available smoke tests and Jest-style checks. The smoke test is dependency-free and can be run with:
-
-```powershell
-node server\testing\smoke_test.js
-```
-
-The testing README explains each check and how to run the Jest-based `code.test.js` if you decide to install Jest.
-
-## 🔗 Available API Endpoints
-
-### EPS (Health Insurance Companies)
-
-- **GET /api/eps** - Retrieve all registered EPS
-- **POST /api/eps** - Create a new EPS
-- **POST /api/eps/login** - Login with EPS email and password
-
-### Medications
-
-- **GET /api/medicamentos** - Retrieve all available medications
-
-### Inventory
-
-- **GET /api/inventario/:eps_id** - Get inventory for a specific EPS
-- **PUT /api/inventario** - Update medication quantity in inventory
-
-## 📁 Folder Descriptions
-
-### config/
-
-Contains all configuration files, particularly the PostgreSQL connection pool that all database operations use. The connection is centralized here to avoid credentials being hardcoded throughout the application.
-
-**Key file:** `db.js` - Exports the connection pool used by models
-
-### controllers/
-
-Contains the HTTP request handlers. These functions receive API requests, validate input, call appropriate model functions, and return responses. Controllers handle the business logic flow without dealing directly with the database.
-
-**Key file:** `usuariosController.js` - Handles all HTTP endpoints for EPS, medications, and inventory
-
-### models/
-
-Contains all database query functions. These are asynchronous functions that execute SQL queries and return results. Models act as the data access layer, keeping database logic separate from HTTP handling.
-
-**Key file:** `usuarioModel.js` - All database operations (getAllEPS, createEPS, loginEPS, etc.)
-
-### node_modules/
-
-Auto-generated folder containing all installed npm packages. Do not modify manually.
-
-## 🔧 Utility Scripts
-
-### migrarPasswords.js
-
-Utility script to hash plain-text passwords in the database using bcrypt. Run this if you have existing EPS records with unhashed passwords:
-
+### Initialize Database
 ```bash
-node migrarPasswords.js
+npm run initdb
+```
+Runs the database initialization script
+
+## 📊 Database Schema
+
+### Tables
+
+#### `eps` - Health Promotion Entities
+```sql
+eps_id          SERIAL PRIMARY KEY
+nombre          VARCHAR(255) NOT NULL
+nit             VARCHAR(50) UNIQUE NOT NULL
+email           VARCHAR(255) UNIQUE NOT NULL
+password        VARCHAR(255) NOT NULL  -- bcrypt hashed
+fecha_registro  TIMESTAMP DEFAULT NOW()
 ```
 
-**What it does:**
-- Finds all EPS records in the database
-- Checks if passwords are already hashed (bcrypt format)
-- Hashes any plain-text passwords with bcrypt (10 rounds)
-- Updates the database with hashed passwords
-
-### probarLoginEPS.js
-
-Test script to verify the login functionality works correctly:
-
-```bash
-node probarLoginEPS.js
+#### `medicamentos` - General Medicine Catalog
+```sql
+medicamento_id  SERIAL PRIMARY KEY
+nombre          VARCHAR(255) NOT NULL UNIQUE
+fecha_creacion  TIMESTAMP DEFAULT NOW()
 ```
 
-**Before running:**
-1. Edit the script and change the `email` and `password` variables to match an EPS record in your database
-2. Run the script to test the login process
+#### `medicamentos_eps` - Inventory per EPS
+```sql
+medicamento_eps_id    SERIAL PRIMARY KEY
+eps_id                INTEGER REFERENCES eps(eps_id)
+medicamento_id        INTEGER REFERENCES medicamentos(medicamento_id)
+descripcion           TEXT
+imagen_url            VARCHAR(500)
+cantidad_disponible   INTEGER DEFAULT 0
+fecha_actualizacion   TIMESTAMP DEFAULT NOW()
 
-**Output examples:**
-- ✅ Login exitoso! - Login succeeded
-- ❌ Usuario no encontrado - Email not found
-- ❌ Contraseña incorrecta - Wrong password
+CONSTRAINT unique_eps_medicamento UNIQUE(eps_id, medicamento_id)
+```
 
-## ⚙️ Technologies Used
+## 🛣️ API Endpoints
 
-| Technology | Purpose | Version |
-|-----------|---------|---------|
-| **Express.js** | Web framework for handling HTTP requests | ^4.19.2 |
-| **PostgreSQL** | Relational database | ≥14 |
-| **pg** | PostgreSQL client for Node.js | ^8.12.0 |
-| **bcrypt** | Password hashing library | (in package.json) |
-| **CORS** | Cross-origin resource sharing middleware | ^2.8.5 |
-| **body-parser** | Middleware to parse request bodies | ^1.20.2 |
-| **dotenv** | Environment variables management | ^16.4.5 |
-| **nodemon** | Auto-restart server during development | ^3.1.0 |
+### EPS Management
 
-## 🧾 Development Standards
+#### Get all EPS
+```http
+GET /api/eps
+```
 
-### Code Style
+**Response:**
+```json
+[
+  {
+    "eps_id": 1,
+    "nombre": "EPS Sura",
+    "nit": "890123456-1",
+    "email": "admin@sura.com"
+  }
+]
+```
 
-- **ES Modules:** Use ES6+ import/export syntax
-- **Naming Convention:** Use camelCase for variables and functions
-- **Comments:** Use JSDoc format for function documentation
-- **Async/Await:** Always use async/await for asynchronous operations
+#### Get EPS by ID
+```http
+GET /api/eps/:eps_id
+```
 
-### Error Handling
+#### Create new EPS
+```http
+POST /api/eps
+Content-Type: application/json
 
-All functions should include try-catch blocks and throw descriptive errors:
-
-```javascript
-try {
-  const data = await someAsyncOperation();
-  res.status(200).json(data);
-} catch (error) {
-  console.error("Error:", error);
-  res.status(500).json({ error: "Descriptive error message" });
+{
+  "nombre": "Nueva EPS",
+  "nit": "890999999-1",
+  "email": "admin@nuevaeps.com",
+  "password": "securepassword"
 }
 ```
 
-### SQL Security
+#### EPS Login
+```http
+POST /api/eps/login
+Content-Type: application/json
 
-Always use parameterized queries to prevent SQL injection:
-
-```javascript
-// ✅ CORRECT
-const result = await pool.query("SELECT * FROM eps WHERE email = $1", [email]);
-
-// ❌ WRONG
-const result = await pool.query(`SELECT * FROM eps WHERE email = '${email}'`);
+{
+  "email": "admin@sura.com",
+  "password": "password123"
+}
 ```
 
-### Response Format
-
-All API responses should be JSON:
-
-```javascript
-// Success response
-res.status(200).json({ data: result });
-
-// Error response
-res.status(400).json({ error: "Error message here" });
+**Response:**
+```json
+{
+  "message": "✅ Login exitoso",
+  "eps": {
+    "eps_id": 1,
+    "nombre": "EPS Sura",
+    "nit": "890123456-1",
+    "email": "admin@sura.com"
+  }
+}
 ```
 
-## 🗄️ Database Schema Overview
+### Medicine Catalog (General)
 
-The application uses three main tables:
-
-**eps** - Health insurance company information
-- eps_id (Primary Key)
-- nombre (Company name)
-- nit (Tax ID)
-- email (Unique email)
-- password (Bcrypt hashed)
-
-**medicamentos** - Available medications
-- medicamento_id (Primary Key)
-- nombre (Medication name)
-- descripcion (Description)
-
-**inventario** - Tracks medication quantities per EPS
-- inventario_id (Primary Key)
-- eps_id (Foreign Key)
-- medicamento_id (Foreign Key)
-- cantidad_disponible (Current quantity)
-- fecha_actualizacion (Last update timestamp)
-
-## 🧱 JavaScript Version
-
-The project uses **ES2022 (Modern ECMAScript)** enabled by `"type": "module"` in package.json. This allows:
-
-- ES6 import/export statements
-- async/await
-- Destructuring
-- Template literals
-- Optional chaining (?.)
-- Nullish coalescing (??)
-- Spread operator (...)
-
-## 🔐 Environment Variables
-
-The `.env` file must contain:
-
-The server now uses Supabase as its database backend. The `.env` file must contain the following Supabase variables (instead of the previous Postgres fields):
-
-```
-# Supabase
-SUPABASE_URL=https://your-project-ref.supabase.co
-SUPABASE_KEY=your-anon-or-service-role-key
-
-# Server Configuration
-PORT=3000
+#### Get all medicines
+```http
+GET /api/medicamentos
 ```
 
-Notes on keys:
-- Use the `anon` public key for client-like operations, and the `service_role` key for server operations that require elevated privileges. Keep `SUPABASE_KEY` secret in production (use `service_role` in secure server environments).
+#### Create medicine
+```http
+POST /api/medicamentos
+Content-Type: application/json
 
-If you previously used direct Postgres connection environment variables (DB_USER/DB_PASSWORD/DB_HOST/DB_NAME/DB_PORT), they are no longer required for the server code in this repo.
-
-**Important:** Never commit the `.env` file to version control. Add it to `.gitignore`.
-
-## 📦 Installing Dependencies
-
-To install or reinstall all dependencies:
-
-```bash
-npm install
+{
+  "nombre": "Paracetamol 500mg"
+}
 ```
 
-To add a new package:
+### Inventory per EPS
 
-```bash
-npm install package-name
+#### Get complete inventory of an EPS
+```http
+GET /api/eps/:eps_id/medicamentos
 ```
 
-To update packages:
-
-```bash
-npm update
-```
-
-## 🐛 Troubleshooting
-
-### "Cannot find module 'pg'"
-
-Make sure all dependencies are installed:
-
-```bash
-npm install
-```
-
-### "Connection refused" error
-
-- Verify PostgreSQL is running
-- Check `.env` file has correct database credentials
-- Ensure the database exists: `createdb inventario_eps`
-
-### "Port 3000 is already in use"
-
-Either:
-- Kill the process using port 3000
-- Change the PORT in the `.env` file
-- Use `npm start` instead of `npm run dev`
-
-### "bcrypt binding error"
-
-Install build tools and reinstall bcrypt:
-
-```bash
-npm install --save-dev node-gyp
-npm install bcrypt
-```
-
-## 📝 npm Scripts
-
-Available npm commands:
-
-```bash
-npm run dev      # Start server in development mode with auto-reload
-npm start        # Start server in production mode
-npm run initdb   # Initialize database (if initDB.js exists)
-```
-
-## Supabase migration notes
-
-
-## Run with Supabase (commands)
-
-Follow these steps (PowerShell examples) to run the server connected to Supabase locally.
-
-1) Install the Supabase client dependency (from the `server` folder or repo root):
-
-```powershell
-# from repo root
-npm install @supabase/supabase-js
-```
-
-2) Create a `.env` file with your Supabase values. Replace the placeholders with your project values.
-
-```powershell
-# from server folder (PowerShell here-string)
-@"
-SUPABASE_URL=https://your-project-ref.supabase.co
-SUPABASE_KEY=your-service-role-or-anon-key
-PORT=3000
-"@ | Out-File -Encoding UTF8 .env
-```
-
-Alternatively, set environment variables for the current session (temporary):
-
-```powershell
-
-## 🔄 API Request Examples
-
-```
-
-3) Start the server (from the repo root):
-
-```powershell
-# development (with nodemon if configured)
-npm run dev
-
-# production
-npm start
-```
-
-4) Verify the connection and endpoints
-
-- The server's startup logs include a Supabase initialization message. You should see `✅ Supabase client initialized` or a warning if the check failed.
-- Try a quick request to an endpoint:
-
-```powershell
-# example: list EPS
-curl http://localhost:3000/api/eps
-```
-
-Notes
-
-- Use the `service_role` key for server-side operations that require elevated privileges. Keep it secret (do not commit it).
-- If you prefer to store secrets in your system environment rather than a `.env` file, set them in your hosting environment or use PowerShell/User environment settings.
-### Create a new EPS
-
-```bash
-curl -X POST http://localhost:3000/api/eps \
-  -H "Content-Type: application/json" \
-  -d '{
-    "nombre": "EPS Nueva",
-    "nit": "900123456",
-    "email": "info@epsnueva.com",
-    "password": "secure_password_123"
-  }'
-```
-
-### Login to EPS
-
-```bash
-curl -X POST http://localhost:3000/api/eps/login \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "info@epsnueva.com",
-    "password": "secure_password_123"
-  }'
-```
-
-### Get all medications
-
-```bash
-curl http://localhost:3000/api/medicamentos
-```
-
-### Get inventory for specific EPS
-
-```bash
-curl http://localhost:3000/api/inventario/1
-```
-
-### Update inventory
-
-```bash
-curl -X PUT http://localhost:3000/api/inventario \
-  -H "Content-Type: application/json" \
-  -d '{
+**Response:**
+```json
+[
+  {
+    "medicamento_eps_id": 1,
     "eps_id": 1,
     "medicamento_id": 5,
-    "cantidad": 100
-  }'
+    "medicamento": "Paracetamol 500mg",
+    "descripcion": "Analgésico y antipirético",
+    "imagen_url": "https://example.com/image.jpg",
+    "cantidad_disponible": 150,
+    "fecha_actualizacion": "2025-01-15T10:30:00Z",
+    "eps": "EPS Sura"
+  }
+]
 ```
 
-## 📚 Additional Resources
+#### Search medicines in EPS inventory
+```http
+GET /api/eps/:eps_id/medicamentos/search?nombre=paracetamol
+```
 
-- [Express.js Documentation](https://expressjs.com/)
-- [PostgreSQL Documentation](https://www.postgresql.org/docs/)
-- [Node.js Documentation](https://nodejs.org/docs/)
-- [bcrypt npm Package](https://www.npmjs.com/package/bcrypt)
+#### Create medicine and add to EPS
+```http
+POST /api/eps/:eps_id/medicamentos/nuevo
+Content-Type: application/json
+
+{
+  "nombre": "Ibuprofeno 400mg",
+  "descripcion": "Antiinflamatorio no esteroideo",
+  "imagen_url": "https://example.com/ibuprofen.jpg",
+  "cantidad_disponible": 200
+}
+```
+
+**Response:**
+```json
+{
+  "medicamento": {
+    "medicamento_id": 10,
+    "nombre": "Ibuprofeno 400mg"
+  },
+  "medicamento_eps": {
+    "medicamento_eps_id": 25,
+    "eps_id": 1,
+    "medicamento_id": 10,
+    "descripcion": "Antiinflamatorio no esteroideo",
+    "imagen_url": "https://example.com/ibuprofen.jpg",
+    "cantidad_disponible": 200,
+    "fecha_actualizacion": "2025-01-15T11:00:00Z"
+  }
+}
+```
+
+#### Add existing medicine to EPS
+```http
+POST /api/eps/:eps_id/medicamentos
+Content-Type: application/json
+
+{
+  "medicamento_id": 5,
+  "descripcion": "Stock disponible",
+  "imagen_url": "https://example.com/image.jpg",
+  "cantidad_disponible": 100
+}
+```
+
+#### Update medicine in EPS
+```http
+PUT /api/eps/:eps_id/medicamentos/:medicamento_id
+Content-Type: application/json
+
+{
+  "cantidad": 250,
+  "descripcion": "Stock actualizado",
+  "imagen_url": "https://example.com/new-image.jpg"
+}
+```
+
+#### Delete medicine from EPS inventory
+```http
+DELETE /api/eps/:eps_id/medicamentos/:medicamento_id
+```
+
+**Note:** This only removes the medicine from the EPS inventory, not from the general catalog.
+
+### Statistics
+
+#### Get system statistics
+```http
+GET /api/stats
+```
+
+**Response:**
+```json
+{
+  "totalEPS": 5,
+  "totalMedicamentos": 1250,
+  "disponibilidadPromedio": 85
+}
+```
+
+## 🔒 Security Features
+
+### Password Hashing
+- All passwords are hashed using bcrypt (10 salt rounds)
+- Automatic migration from plaintext to hashed passwords on login
+- Passwords never returned in API responses
+
+### Authentication
+- Login endpoint validates credentials and returns EPS data (without password)
+- Failed login attempts return appropriate error messages
+- Email existence check for better error feedback
+
+### Validations
+- Required field validation on all endpoints
+- Unique constraints on NIT and email for EPS
+- Duplicate medicine prevention per EPS (unique constraint)
+- Input sanitization through Express body-parser
+
+## 🐛 Error Handling
+
+### Common HTTP Status Codes
+
+- `200` - Success
+- `201` - Resource created successfully
+- `400` - Bad request (missing required fields)
+- `401` - Unauthorized (invalid credentials)
+- `404` - Resource not found
+- `409` - Conflict (duplicate resource)
+- `500` - Server error
+
+### Error Response Format
+```json
+{
+  "error": "Error description",
+  "details": "Additional details (only in development)"
+}
+```
+
+## 🚀 Deployment
+
+### Render (Recommended)
+
+1. **Create new Web Service**
+2. **Connect repository**
+3. **Configure:**
+   - Build Command: `npm install`
+   - Start Command: `npm start`
+   - Environment: Node
+4. **Add environment variables:**
+   - `SUPABASE_URL`
+   - `SUPABASE_KEY`
+   - `PORT` (optional, Render auto-assigns)
+
+### Alternative Platforms
+
+- **Heroku:** Use Procfile with `web: npm start`
+- **Railway:** Auto-detects Node.js configuration
+- **DigitalOcean App Platform:** Similar to Render setup
+
+## 📈 Performance Considerations
+
+### Database Queries
+- Uses Supabase client with automatic connection pooling
+- Indexes on foreign keys (eps_id, medicamento_id)
+- Unique constraints for data integrity
+- Order results by name for better UX
+
+### Caching Recommendations
+- Consider Redis for frequently accessed data
+- Implement ETag headers for conditional requests
+- Use CDN for static content (if applicable)
+
+## 🧪 Testing
+
+### Manual Testing with curl
+
+```bash
+# Test EPS endpoint
+curl http://localhost:3000/api/eps
+
+# Test login
+curl -X POST http://localhost:3000/api/eps/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"admin@sura.com","password":"password123"}'
+
+# Test inventory
+curl http://localhost:3000/api/eps/1/medicamentos
+```
+
+### Recommended Testing Tools
+- **Postman** - API testing and documentation
+- **Insomnia** - REST client
+- **Jest** - Unit testing framework (to implement)
+
+## 🔄 Migration from PostgreSQL to Supabase
+
+The application now uses Supabase instead of direct PostgreSQL connection. Legacy environment variables (DB_USER, DB_PASSWORD, etc.) are maintained for reference but not used.
+
+### Benefits of Supabase
+- Built-in authentication and security
+- Real-time subscriptions (future feature)
+- Auto-generated REST API
+- Built-in storage for files
+- Dashboard for database management
+
+## 📝 Development Notes
+
+### Code Style
+- ES6+ modules (type: "module")
+- Async/await for asynchronous operations
+- Descriptive error messages with emojis
+- Console logging for debugging
+
+### Future Improvements
+- [ ] Implement JWT authentication
+- [ ] Add rate limiting
+- [ ] Implement request validation middleware
+- [ ] Add comprehensive unit tests
+- [ ] Add API documentation with Swagger
+- [ ] Implement pagination for large datasets
+- [ ] Add real-time updates with WebSockets
+
+## 📞 Support
+
+For issues or suggestions:
+- Create an issue in the repository
+- Contact the development team
+
+## 📄 License
+
+This project is part of the MediClick system for medicine access in Colombia.
+
+---
+
