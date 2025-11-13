@@ -1,51 +1,52 @@
-# Deploy del cliente (static site)
 
-Este archivo explica cómo desplegar la parte cliente (frontend) de la aplicación.
+# Client deployment (static site)
 
-Requisitos
-- Node.js instalado (opcional si usas la CI)
-- Tener acceso al servicio de hosting (p. ej. Render) y las credenciales necesarias.
+This document explains how to deploy the client (frontend) of the application.
 
-1) Probar localmente
+Prerequisites
+- Node.js installed (optional if you use CI)
+- Access to a hosting service (e.g. Render) and the required credentials
 
-- Instalar dependencias (si `client/package.json` existe):
+1) Test locally
+
+- Install dependencies (if `client/package.json` exists):
 
 ```powershell
 cd client
 npm install
 ```
 
-- Probar en desarrollo (opcional):
+- Start a quick dev server (optional):
 
 ```powershell
 npx live-server --port=5000
-# o, si está configurado en package.json
+# or, if configured in package.json
 npm run dev
 ```
 
-2) Construir para producción (si aplica)
+2) Build for production (if applicable)
 
-Si tu cliente tiene un paso de build (por ejemplo React/Vite), ejecuta:
+If your client requires a build step (React, Vite, etc.), run:
 
 ```powershell
 cd client
 npm run build
 ```
 
-3) Desplegar en Render (GUI)
+3) Deploy to Render (GUI)
 
-- Crear un nuevo servicio Static Site en Render apuntando al repositorio y al directorio `client`.
-- Configura la ruta de build si usas `npm run build`.
-- Si quieres que el cliente apunte al servidor desplegado en Render, añade en `client/index.html` o mediante la configuración del host la variable `window.__API_URL__ = 'https://<tu-backend>'` o deja la URL por defecto en `client/api.js`.
+- Create a new Static Site or Web Service in Render and point it to the repository's `client` directory.
+- Configure the build command and publish directory if your project has a build step.
+- To point the client at your deployed backend, set `window.__API_URL__ = 'https://<your-backend>'` in `client/index.html`, or ensure `client/api.js` contains the correct API URL.
 
-4) Desplegar desde CI (GitHub Actions)
+4) Deploy from CI (GitHub Actions)
 
-Este repo tiene workflows de GitHub Actions que pueden disparar el redeploy en Render automáticamente cuando se hace push a las ramas configuradas (requieren secrets en GitHub):
+This repository includes GitHub Actions workflows that can trigger a redeploy on Render automatically when you push to configured branches. The workflows require GitHub Secrets:
 
-- `RENDER_API_KEY` – API key desde Render (en Settings → API Keys).
-- `RENDER_CLIENT_SERVICE_ID` – ID del servicio Render asociado al cliente (lo encuentras en la URL del servicio o en la dashboard).
+- `RENDER_API_KEY` – Render API key (Settings → API Keys)
+- `RENDER_CLIENT_SERVICE_ID` – Render service ID for the client site
 
-Con esos secretos configurados, el workflow `deploy-main.yml` o `deploy-branches.yml` puede disparar un deploy automático.
+With those secrets set, the `deploy-main.yml` or `deploy-branches.yml` workflows can trigger an automatic deploy.
 
-5) Notas
-- Si sirves el cliente como site estático, asegúrate de que `API_URL` en `client/api.js` apunte a tu backend desplegado.
+5) Notes
+- If you host the client as a static site, make sure the `API_URL` in `client/api.js` points to your deployed backend.

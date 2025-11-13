@@ -1,14 +1,14 @@
-# Deploy del servidor (backend)
+# Server deployment (backend)
 
-Guía paso a paso para desplegar la parte servidor del proyecto.
+Step-by-step guide to deploy the server part of the project.
 
-Requisitos
-- Node.js 18+ (o la versión que uses en producción)
-- Variables de entorno obligatorias en el entorno de despliegue:
+Prerequisites
+- Node.js 18+ (or the version you use in production)
+- Required environment variables in the deployment environment:
   - SUPABASE_URL
   - SUPABASE_KEY
 
-1) Probar localmente
+1) Test locally
 
 ```powershell
 cd server
@@ -16,35 +16,35 @@ npm install
 node app.js
 ```
 
-2) Variables de entorno en producción
+2) Environment variables in production
 
-Añade en tu proveedor de hosting (Render/Heroku/VPS) las variables:
+Add the following variables in your hosting provider (Render/Heroku/VPS):
 
 - SUPABASE_URL = https://xxx.supabase.co
-- SUPABASE_KEY = <service-role-key-o-api-key>
+- SUPABASE_KEY = <service-role-key-or-api-key>
 
-3) Migrar contraseñas (opcional)
+3) Password migration (optional)
 
-Si las contraseñas de `eps` no están hasheadas, corre el script de migración (si corresponde):
+If `eps` passwords are not hashed, run the migration script (if applicable):
 
 ```powershell
-# Establece las variables de entorno necesarias en tu shell o en la configuración del servicio
+# Set the required env vars in your shell or service configuration
 $env:SUPABASE_URL = 'https://...'
 $env:SUPABASE_KEY = '...'
 node migrarPasswords.js
 ```
 
-4) Desplegar en Render (GUI)
+4) Deploy to Render (GUI)
 
-- Crear un nuevo servicio Web Service en Render apuntando al `server` como Root Directory.
-- Build & Start commands si tu servicio lo requiere:
+- Create a new Web Service in Render and set the Root Directory to `server`.
+- Build & Start commands (if required):
   - Build: `cd server && npm install`
-  - Start: `cd server && npm start` (o `node app.js`)
+  - Start: `cd server && npm start` (or `node app.js`)
 
-5) Desplegar desde CI (GitHub Actions)
+5) Deploy from CI (GitHub Actions)
 
-- Secrets requeridos para la acción de deploy automática:
+- Secrets required for the automated deploy action:
   - `RENDER_API_KEY`
   - `RENDER_SERVER_SERVICE_ID`
 
-La GitHub Action en este repo usa la API de Render para forzar un deploy cuando hagas push a las ramas configuradas (main / stage / development) si los secrets están presentes.
+The GitHub Action in this repository uses the Render API to trigger a deploy when you push to configured branches (main / stage / development) if the secrets are present.
