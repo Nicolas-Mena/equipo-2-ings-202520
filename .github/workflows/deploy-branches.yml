@@ -36,38 +36,4 @@ jobs:
             npm ci || npm install
           fi
 
-      - name: Trigger Render deploy for branch
-        env:
-          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
-          RENDER_SERVICE_ID_MAIN: ${{ secrets.RENDER_SERVICE_ID_MAIN }}
-          RENDER_SERVICE_ID_STAGE: ${{ secrets.RENDER_SERVICE_ID_STAGE }}
-          RENDER_SERVICE_ID_DEVELOPMENT: ${{ secrets.RENDER_SERVICE_ID_DEVELOPMENT }}
-        run: |
-          BRANCH=${GITHUB_REF#refs/heads/}
-          echo "Branch is: $BRANCH"
-          if [ -z "$RENDER_API_KEY" ]; then
-            echo "RENDER_API_KEY not set, skipping deploy";
-            exit 0;
-          fi
-
-          if [ "$BRANCH" = 'main' ]; then
-            SERVICE_ID="$RENDER_SERVICE_ID_MAIN"
-          elif [ "$BRANCH" = 'stage' ]; then
-            SERVICE_ID="$RENDER_SERVICE_ID_STAGE"
-          elif [ "$BRANCH" = 'development' ]; then
-            SERVICE_ID="$RENDER_SERVICE_ID_DEVELOPMENT"
-          else
-            echo "No service configured for branch $BRANCH";
-            exit 0;
-          fi
-
-          if [ -z "$SERVICE_ID" ]; then
-            echo "SERVICE_ID for $BRANCH not set, skipping deploy";
-            exit 0;
-          fi
-
-          echo "Triggering deploy for service $SERVICE_ID on branch $BRANCH"
-          curl -s -X POST "https://api.render.com/v1/services/$SERVICE_ID/deploys" \
-            -H "Authorization: Bearer $RENDER_API_KEY" \
-            -H "Content-Type: application/json" \
-            -d '{"clearCache":true}'
+      # Render deploy step removed: Render auto-deploys on repo pushes, so no manual API trigger is needed.
