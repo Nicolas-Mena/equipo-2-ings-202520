@@ -1,6 +1,12 @@
 name: Deploy on branches (main, stage, development)
 
 on:
+  # Required repository secrets (add these in GitHub Settings -> Secrets):
+  # - RENDER_API_KEY: API key for Render (used to trigger deploys)
+  # - RENDER_SERVICE_ID_MAIN: Render service ID to deploy when pushing to 'main' (optional)
+  # - RENDER_SERVICE_ID_STAGE: Render service ID to deploy when pushing to 'stage' (optional)
+  # - RENDER_SERVICE_ID_DEVELOPMENT: Render service ID to deploy when pushing to 'development' (optional)
+
   push:
     branches: [ 'main', 'stage', 'development' ]
 
