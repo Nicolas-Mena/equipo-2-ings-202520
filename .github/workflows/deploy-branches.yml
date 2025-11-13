@@ -1,0 +1,67 @@
+name: Deploy on branches (main, stage, development)
+
+on:
+  push:
+    branches: [ 'main', 'stage', 'development' ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies (server)
+        working-directory: ./server
+        run: |
+          if [ -f package.json ]; then
+            npm ci || npm install
+          fi
+
+      - name: Install dependencies (client)
+        working-directory: ./client
+        run: |
+          if [ -f package.json ]; then
+            npm ci || npm install
+          fi
+
+      - name: Trigger Render deploy for branch
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+          RENDER_SERVICE_ID_MAIN: ${{ secrets.RENDER_SERVICE_ID_MAIN }}
+          RENDER_SERVICE_ID_STAGE: ${{ secrets.RENDER_SERVICE_ID_STAGE }}
+          RENDER_SERVICE_ID_DEVELOPMENT: ${{ secrets.RENDER_SERVICE_ID_DEVELOPMENT }}
+        run: |
+          BRANCH=${GITHUB_REF#refs/heads/}
+          echo "Branch is: $BRANCH"
+          if [ -z "$RENDER_API_KEY" ]; then
+            echo "RENDER_API_KEY not set, skipping deploy";
+            exit 0;
+          fi
+
+          if [ "$BRANCH" = 'main' ]; then
+            SERVICE_ID="$RENDER_SERVICE_ID_MAIN"
+          elif [ "$BRANCH" = 'stage' ]; then
+            SERVICE_ID="$RENDER_SERVICE_ID_STAGE"
+          elif [ "$BRANCH" = 'development' ]; then
+            SERVICE_ID="$RENDER_SERVICE_ID_DEVELOPMENT"
+          else
+            echo "No service configured for branch $BRANCH";
+            exit 0;
+          fi
+
+          if [ -z "$SERVICE_ID" ]; then
+            echo "SERVICE_ID for $BRANCH not set, skipping deploy";
+            exit 0;
+          fi
+
+          echo "Triggering deploy for service $SERVICE_ID on branch $BRANCH"
+          curl -s -X POST "https://api.render.com/v1/services/$SERVICE_ID/deploys" \
+            -H "Authorization: Bearer $RENDER_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d '{"clearCache":true}'

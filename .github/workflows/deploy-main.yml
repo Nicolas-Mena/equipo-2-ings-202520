@@ -1,0 +1,52 @@
+name: Deploy on main
+
+on:
+  push:
+    branches: [ 'main' ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install & build server (if applicable)
+        working-directory: ./server
+        run: |
+          if [ -f package.json ]; then
+            npm ci || npm install
+          fi
+
+      - name: Install & build client (if applicable)
+        working-directory: ./client
+        run: |
+          if [ -f package.json ]; then
+            npm ci || npm install
+            if npm run | grep -q "build"; then
+              npm run build || true
+            fi
+          fi
+
+      - name: Trigger Render deploy for server (if configured)
+        if: ${{ secrets.RENDER_API_KEY && secrets.RENDER_SERVER_SERVICE_ID }}
+        run: |
+          echo "Triggering Render deploy for server..."
+          curl -s -X POST "https://api.render.com/v1/services/${{ secrets.RENDER_SERVER_SERVICE_ID }}/deploys" \
+            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d '{"clearCache":true}'
+
+      - name: Trigger Render deploy for client (if configured)
+        if: ${{ secrets.RENDER_API_KEY && secrets.RENDER_CLIENT_SERVICE_ID }}
+        run: |
+          echo "Triggering Render deploy for client..."
+          curl -s -X POST "https://api.render.com/v1/services/${{ secrets.RENDER_CLIENT_SERVICE_ID }}/deploys" \
+            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d '{"clearCache":true}'
