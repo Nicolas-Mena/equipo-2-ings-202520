@@ -1,0 +1,529 @@
+/* ============================================================================
+   MEDICLICK - Sistema de Consulta de Medicamentos
+   Diseño: Minimalista y Profesional
+   ============================================================================ */
+
+:root {
+  --bg: #f5efe6;
+  --text: #1f2430;
+  --muted: #6b7280;
+  --primary: #3f63e1;
+  --primary-hover: #3558d6;
+  --surface: #ffffff;
+  --surface-alt: #f7f9ff;
+  --border: #e5e9f3;
+  --border-strong: #cfd7ea;
+  --focus: #8aa2f5;
+  --chip-text: #3f63e1;
+  --card-img-bg: #f3f6ff;
+  --shadow: 0 8px 30px rgba(0, 0, 0, .08);
+  --radius: 14px;
+
+  /* Estados de stock */
+  --green-bg: #e8f5ec;
+  --green-fg: #1e7a3a;
+  --yellow-bg: #fff8db;
+  --yellow-fg: #8a6d00;
+  --red-bg: #fde8e8;
+  --red-fg: #a61b1b;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  height: 100%;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+/* ============================================================================
+   CONTENEDORES
+   ============================================================================ */
+
+.container {
+  max-width: 1200px;
+  width: min(1200px, 96%);
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+/* ============================================================================
+   HERO SECTION
+   ============================================================================ */
+
+.hero {
+  background: linear-gradient(135deg, var(--primary), #1e3a8a);
+  color: white;
+  border-radius: 18px;
+  padding: 32px 24px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  margin: 28px auto;
+}
+
+.hero h1 {
+  margin: 0;
+  font-weight: 800;
+  font-size: 2.5rem;
+  letter-spacing: 0.5px;
+}
+
+.hero p {
+  margin: 0.5rem 0 0;
+  opacity: 0.95;
+  font-size: 1.1rem;
+}
+
+/* ============================================================================
+   GRIDS
+   ============================================================================ */
+
+.grid {
+  display: grid;
+  gap: 22px;
+}
+
+.grid-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+@media (max-width: 980px) {
+  .grid-2, .grid-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================================================
+   CARDS
+   ============================================================================ */
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card.hover {
+  cursor: pointer;
+}
+
+.card.hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+}
+
+.card h3 {
+  margin: 0 0 8px;
+  font-size: 1.4rem;
+  color: var(--text);
+}
+
+.card p {
+  margin: 6px 0;
+  color: var(--muted);
+}
+
+/* ============================================================================
+   EPS CARDS
+   ============================================================================ */
+
+.eps-card {
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  overflow: hidden;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.eps-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+}
+
+.eps-body {
+  padding: 20px;
+}
+
+.eps-body h3 {
+  margin: 0 0 10px;
+  font-size: 1.3rem;
+}
+
+.eps-body p {
+  margin: 6px 0;
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+
+/* ============================================================================
+   MEDICINE CARDS
+   ============================================================================ */
+
+.med-card {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  transition: transform 0.2s ease;
+}
+
+.med-card:hover {
+  transform: translateY(-2px);
+}
+
+.med-img {
+  height: 200px;
+  width: 100%;
+  object-fit: cover;
+  background: var(--card-img-bg);
+}
+
+.med-body {
+  padding: 16px;
+}
+
+/* ============================================================================
+   BADGES Y PILLS
+   ============================================================================ */
+
+.badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 8px;
+}
+
+.badge.success {
+  background: var(--green-bg);
+  color: var(--green-fg);
+}
+
+.badge.warn {
+  background: var(--yellow-bg);
+  color: var(--yellow-fg);
+}
+
+.badge.red {
+  background: var(--red-bg);
+  color: var(--red-fg);
+}
+
+.pill {
+  display: inline-block;
+  border-radius: 10px;
+  padding: 6px 10px;
+  font-weight: 700;
+  font-size: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+
+.pill.green {
+  background: #eaffef;
+  color: #16a34a;
+  border-color: #16a34a;
+}
+
+.pill.amber {
+  background: #fff7e6;
+  color: #f59e0b;
+  border-color: #f59e0b;
+}
+
+.pill.red {
+  background: #ffe6e6;
+  color: #dc2626;
+  border-color: #dc2626;
+}
+
+/* ============================================================================
+   ESTADÍSTICAS
+   ============================================================================ */
+
+.stat {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+
+.stat .value {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--primary);
+}
+
+.stat .label {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+/* ============================================================================
+   TOOLBAR
+   ============================================================================ */
+
+.toolbar {
+  position: sticky;
+  top: 0;
+  background: linear-gradient(135deg, var(--primary), #1e3a8a);
+  color: #fff;
+  padding: 12px 0;
+  margin-bottom: 18px;
+  border-radius: 0 0 10px 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+}
+
+.toolbar .brand {
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  font-size: 1.2rem;
+}
+
+/* ============================================================================
+   BOTONES
+   ============================================================================ */
+
+.btn {
+  cursor: pointer;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--text);
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.15s ease;
+}
+
+.btn:hover {
+  background: var(--surface-alt);
+  border-color: #b7c4e9;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn.primary {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #ffffff;
+}
+
+.btn.primary:hover {
+  background: var(--primary-hover);
+}
+
+/* ============================================================================
+   INPUTS
+   ============================================================================ */
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 14px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: var(--focus);
+  box-shadow: 0 0 0 3px rgba(138, 162, 245, 0.25);
+}
+
+input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ============================================================================
+   UTILIDADES
+   ============================================================================ */
+
+.muted {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.row-between {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ============================================================================
+   LOADING SPINNER
+   ============================================================================ */
+
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid var(--border);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-spinner p {
+  margin-top: 16px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+/* ============================================================================
+   ERROR MESSAGE
+   ============================================================================ */
+
+.error-message {
+  background: var(--red-bg);
+  border: 1px solid var(--red-fg);
+  color: var(--red-fg);
+  padding: 16px;
+  border-radius: 10px;
+  margin: 16px 0;
+}
+
+.error-message p {
+  margin: 0 0 10px;
+  font-weight: 600;
+}
+
+/* ============================================================================
+   MODAL
+   ============================================================================ */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease;
+}
+
+.modal-content {
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease;
+}
+
+.modal-content h3 {
+  margin: 0 0 16px;
+  font-size: 1.5rem;
+}
+
+.modal-content label {
+  display: block;
+  margin: 12px 0 6px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ============================================================================
+   RESPONSIVE
+   ============================================================================ */
+
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 2rem;
+  }
+
+  .hero p {
+    font-size: 1rem;
+  }
+
+  .stat .value {
+    font-size: 1.8rem;
+  }
+
+  .toolbar .brand {
+    font-size: 1rem;
+  }
+
+  .modal-content {
+    width: 95%;
+    padding: 20px;
+  }
+}

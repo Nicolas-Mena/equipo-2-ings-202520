@@ -1,0 +1,266 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Imagen Hub con Texto — Demo</title>
+    <style>
+      /* Minimal design system (no Tailwind required) */
+      :root{
+        --bg:#0b0c10;
+        --panel:#ffffff;
+        --text:#0f172a;
+        --muted:#6b7280;
+        --line:#e5e7eb;
+        --primary:#1d4ed8;
+        --primary-2:#2563eb;
+        --success:#16a34a;
+        --warning:#f59e0b;
+        --radius:14px;
+        --shadow:0 8px 30px rgba(0,0,0,.08);
+      }
+      *{box-sizing:border-box}
+      html,body,#root{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial;background:#f7f8fa;color:var(--text)}
+      .container{width:min(1200px, 96%);margin:0 auto}
+      .hero{background:linear-gradient(135deg,var(--primary),#1e3a8a);color:white;border-radius:18px;padding:28px 20px;text-align:center;box-shadow:var(--shadow);margin:28px auto}
+      .hero h1{margin:0;font-weight:800;letter-spacing:.5px}
+      .hero p{margin:.5rem 0 0 0;opacity:.95}
+      .grid{display:grid;gap:22px}
+      .grid-2{grid-template-columns:repeat(2,1fr)}
+      .grid-3{grid-template-columns:repeat(3,1fr)}
+      @media (max-width: 980px){
+        .grid-2,.grid-3{grid-template-columns:1fr}
+      }
+      .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+      .card.hover:hover{transform:translateY(-2px);transition:transform .2s ease}
+      .muted{color:var(--muted)}
+      .row{display:flex;gap:12px;align-items:center}
+      .row-between{display:flex;gap:12px;align-items:center;justify-content:space-between}
+      .btn{padding:10px 14px;border-radius:10px;border:1px solid var(--line);background:#fff;cursor:pointer}
+      .btn.primary{background:#0b1026;color:#fff;border-color:#0b1026}
+      .btn.ghost{background:#fff}
+      .stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;text-align:center;box-shadow:var(--shadow)}
+      .stat .value{font-size:22px;font-weight:800}
+      .stat .label{font-size:12px;color:var(--muted)}
+      .eps-card{border:1px solid var(--line);border-radius:18px;overflow:hidden;background:#fff;box-shadow:var(--shadow)}
+      .eps-img{height:180px;width:100%;object-fit:cover;background:#f1f5f9}
+      .eps-body{padding:16px}
+      .badge{display:inline-block;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:600}
+      .badge.success{background:#dcfce7;color:#166534}
+      .badge.warn{background:#fef3c7;color:#854d0e}
+      .list{list-style:none;padding:0;margin:8px 0 0 0;display:grid;gap:6px;color:#374151}
+      .sep{height:1px;background:var(--line);margin:8px 0}
+      .toolbar{position:sticky;top:0;background:linear-gradient(135deg,var(--primary),#1e3a8a);color:#fff;padding:8px 14px;margin-bottom:18px;border-radius:0 0 10px 10px}
+      .toolbar .brand{font-weight:800;letter-spacing:.4px}
+      .med-card{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff;box-shadow:var(--shadow)}
+      .med-img{height:160px;width:100%;object-fit:cover;background:#f8fafc}
+      .med-body{padding:12px}
+      .pill{display:inline-block;border-radius:10px;padding:6px 10px;font-weight:700;font-size:12px}
+      .pill.green{background:#eaffef;color:#16a34a}
+      .pill.amber{background:#fff7e6;color:#f59e0b}
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <!-- React + ReactDOM UMD builds -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <!-- Babel to transpile inline JSX (only for simple demos; not for production) -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Inline demo app (JSX transpiled by Babel in the browser) -->
+    <script type="text/babel" data-presets="react">
+      const { useState } = React;
+
+      function Hero(){
+        return (
+          <div className="container">
+            <div className="hero">
+              <h1>MEDICLICK</h1>
+              <p>Consulta medicamentos disponibles en las EPS de Colombia</p>
+            </div>
+          </div>
+        );
+      }
+
+      function UserTypeSelection({ onSelectUserType }){
+        return (
+          <div className="container">
+            <Hero />
+            <div className="grid grid-2" style={{marginTop:24}}>
+              <div className="card hover" style={{padding:28}}>
+                <div className="row" style={{gap:16}}>
+                  <div style={{width:64,height:64,borderRadius:999,background:'#f1f5f9',display:'grid',placeItems:'center'}}>
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#111827" strokeWidth="2"><path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                  </div>
+                  <div>
+                    <h3 style={{margin:'0 0 4px 0'}}>Soy Usuario</h3>
+                    <p className="muted">Consultar disponibilidad de medicamentos en las EPS de Colombia</p>
+                  </div>
+                </div>
+                <div className="row" style={{marginTop:18}}>
+                  <button className="btn primary" onClick={() => onSelectUserType('user')}>Continuar como Usuario</button>
+                </div>
+              </div>
+              <div className="card hover" style={{padding:28}}>
+                <div className="row" style={{gap:16}}>
+                  <div style={{width:64,height:64,borderRadius:999,background:'#f1f5f9',display:'grid',placeItems:'center'}}>
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#111827" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  </div>
+                  <div>
+                    <h3 style={{margin:'0 0 4px 0'}}>Soy Miembro EPS</h3>
+                    <p className="muted">Gestionar inventario y actualizar disponibilidad de medicamentos</p>
+                  </div>
+                </div>
+                <div className="row" style={{marginTop:18}}>
+                  <button className="btn primary" onClick={() => onSelectUserType('admin')}>Acceder como Administrador</button>
+                </div>
+              </div>
+            </div>
+            <p className="muted" style={{textAlign:'center',marginTop:24}}>Selecciona tu tipo de acceso para continuar</p>
+          </div>
+        );
+      }
+
+      function Toolbar({ userType, onLogout }){
+        return (
+          <div className="toolbar">
+            <div className="container row-between">
+              <div className="brand row" style={{gap:10}}>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2"><path d="M3 8a4 4 0 0 1 4-4h4v4H7v4H3V8Z"/><path d="M21 16a4 4 0 0 1-4 4h-4v-4h4v-4h4v4Z"/></svg>
+                MEDICLICK
+              </div>
+              <div className="row" style={{gap:10}}>
+                <span className="pill green">En línea</span>
+                <span className="pill" style={{background:'#0b1026',color:'#fff'}}>{userType === 'admin' ? 'Administrador' : 'Usuario'}</span>
+                <button className="btn" onClick={onLogout}>Salir</button>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      function Stats(){
+        return (
+          <div className="grid grid-3 container" style={{marginTop:12}}>
+            <div className="stat"><div className="value">6</div><div className="label">EPS Disponibles</div></div>
+            <div className="stat"><div className="value">6150</div><div className="label">Medicamentos Total</div></div>
+            <div className="stat"><div className="value">90%</div><div className="label">Disponibilidad Promedio</div></div>
+          </div>
+        );
+      }
+
+      const EPS = [
+        {name:'Sura EPS', ciudad:'Medellín, Antioquia', tel:'+57 4 444-4444', meds:1250, disp:95, img:'https://images.unsplash.com/photo-1584816175442-c46e2981c5d3?q=80&w=1600&auto=format&fit=crop'},
+        {name:'Sanitas EPS', ciudad:'Bogotá, Cundinamarca', tel:'+57 1 111-1111', meds:980, disp:88, img:'https://images.unsplash.com/photo-1586773860418-d37222d8fce3?q=80&w=1600&auto=format&fit=crop'},
+        {name:'Coomeva EPS', ciudad:'Cali, Valle del Cauca', tel:'+57 2 222-2222', meds:1100, disp:92, img:'https://images.unsplash.com/photo-1544991875-5dc1b05f607a?q=80&w=1600&auto=format&fit=crop'},
+      ];
+
+      function EPSCard({ item, onSelect }){
+        const badge = item.disp >= 90 ? 'success' : 'warn';
+        const label = item.disp >= 90 ? `${item.disp}% disponible` : `${item.disp}% disponible`;
+        return (
+          <div className="eps-card">
+            <img className="eps-img" src={item.img} alt={item.name} />
+            <div className="eps-body">
+              <div className="row-between">
+                <h3 style={{margin:0}}>{item.name}</h3>
+                <span className={`badge ${badge}`}>{label}</span>
+              </div>
+              <ul className="list">
+                <li>📍 {item.ciudad}</li>
+                <li>📞 {item.tel}</li>
+                <li>🏷️ {item.meds} medicamentos</li>
+              </ul>
+              <div className="sep"></div>
+              <button className="btn primary" onClick={() => onSelect(item.name)}>Ver Medicamentos Disponibles</button>
+            </div>
+          </div>
+        );
+      }
+
+      function DashboardView({ userType, onLogout, onEPSSelect }){
+        return (
+          <>
+            <Toolbar userType={userType} onLogout={onLogout} />
+            <div className="container" style={{marginTop:10}}>
+              <Stats />
+              <div className="grid grid-3" style={{marginTop:16}}>
+                {EPS.map(e => <EPSCard key={e.name} item={e} onSelect={onEPSSelect} />)}
+              </div>
+            </div>
+          </>
+        );
+      }
+
+      const MEDS = [
+        {name:'Acetaminofén 500mg', cat:'Analgésico', stock:150, img:'https://images.unsplash.com/photo-1598111464965-d2ee328b30fe?q=80&w=1600&auto=format&fit=crop'},
+        {name:'Ibuprofeno 400mg', cat:'Antiinflamatorio', stock:89, img:'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=1600&auto=format&fit=crop'},
+        {name:'Amoxicilina 250mg', cat:'Antibiótico', stock:45, img:'https://images.unsplash.com/photo-1582719478250-28b49d84772e?q=80&w=1600&auto=format&fit=crop'},
+        {name:'Omeprazol 20mg', cat:'Gastroprotector', stock:67, img:'https://images.unsplash.com/photo-1584367369853-8b966cf22d3d?q=80&w=1600&auto=format&fit=crop'},
+        {name:'Creatina Monohidratada', cat:'Suplemento', stock:73, img:'https://images.unsplash.com/photo-1620656853674-8ccca2eb7bd2?q=80&w=1600&auto=format&fit=crop'},
+        {name:'Jeringas Estériles', cat:'Insumo', stock:120, img:'https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?q=80&w=1600&auto=format&fit=crop'},
+        {name:'Cápsulas Omega 3', cat:'Suplemento', stock:95, img:'https://images.unsplash.com/photo-1603190287605-e6ade32fa852?q=80&w=1600&auto=format&fit=crop'},
+        {name:'Antigripal 500mg', cat:'Resfriado', stock:34, img:'https://images.unsplash.com/photo-1495546968767-f0573cca821e?q=80&w=1600&auto=format&fit=crop'}
+      ];
+
+      function MedCard({ m }){
+        const pill = m.stock >= 90 ? 'green' : 'amber';
+        const label = `${m.stock} disponibles`;
+        return (
+          <div className="med-card">
+            <img className="med-img" src={m.img} alt={m.name} />
+            <div className="med-body">
+              <div style={{fontWeight:700}}>{m.name}</div>
+              <div className="muted" style={{fontSize:13}}>{m.cat}</div>
+              <div style={{marginTop:10}} className={`pill ${pill}`}>{label}</div>
+            </div>
+          </div>
+        );
+      }
+
+      function EPSDetailView({ epsName, onBack }){
+        return (
+          <>
+            <div className="toolbar">
+              <div className="container row-between">
+                <div className="brand">{epsName} — Inventario</div>
+                <button className="btn" onClick={onBack}>Volver</button>
+              </div>
+            </div>
+            <div className="container" style={{marginTop:10}}>
+              <div className="muted" style={{marginBottom:8}}>{MEDS.length} medicamentos encontrados</div>
+              <div className="grid grid-3">
+                {MEDS.map(m => <MedCard key={m.name} m={m} />)}
+              </div>
+            </div>
+          </>
+        );
+      }
+
+      function App(){
+        const [view,setView] = useState('login');
+        const [userType,setUserType] = useState(null);
+        const [selectedEPS,setSelectedEPS] = useState(null);
+
+        const onSelectUserType = (t)=>{ setUserType(t); setView(t==='admin'?'admin-dashboard':'user-dashboard'); };
+        const onLogout = ()=>{ setUserType(null); setSelectedEPS(null); setView('login'); };
+        const onEPSSelect = (name)=>{ setSelectedEPS(name); setView(userType==='admin'?'admin-panel':'user-eps-detail'); };
+        const onBackToEPS = ()=>{ setSelectedEPS(null); setView(userType==='admin'?'admin-dashboard':'user-dashboard'); };
+
+        if(view==='login') return <UserTypeSelection onSelectUserType={onSelectUserType} />;
+        if(view==='user-dashboard') return <DashboardView userType={userType} onLogout={onLogout} onEPSSelect={onEPSSelect} />;
+        if(view==='admin-dashboard') return <DashboardView userType={userType} onLogout={onLogout} onEPSSelect={onEPSSelect} />;
+        if(view==='user-eps-detail' && selectedEPS) return <EPSDetailView epsName={selectedEPS} onBack={onBackToEPS} />;
+        if(view==='admin-panel' && selectedEPS) return <EPSDetailView epsName={selectedEPS} onBack={onBackToEPS} />;
+        return <div className="container"><div className="card">Estado inesperado</div></div>;
+      }
+
+      const root = ReactDOM.createRoot(document.getElementById('root'));
+      root.render(<App />);
+    </script>
+  </body>
+</html>
+  
